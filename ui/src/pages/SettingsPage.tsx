@@ -52,7 +52,7 @@ export const SettingsPage = React.memo(() => {
       });
 
       if (response.ok) {
-        toast.success("Profile updated");
+        toast.success("Display name updated");
         setIsEditing(false);
       } else {
         toast.error("Failed to update profile");
@@ -67,10 +67,8 @@ export const SettingsPage = React.memo(() => {
     setProfileForm((prev) => ({ ...prev, [name]: value }));
   }, []);
 
-  const handleNotificationChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>, type: 'emailNotifications' | 'taskReminders') => {
-    const updatedSettings = { ...notificationSettings, [type]: e.target.checked } as UserSettings;
-    setNotificationSettings(updatedSettings);
-
+  const updateNotificationSettings = useCallback(async (settings: UserSettings, type: string) => {
+    const messageType = type === 'emailNotifications' ? 'Email' : 'Task reminder';
     try {
       const response = await fetch(`${API_URL}/settings/user/notification`, {
         method: 'PUT',
@@ -78,16 +76,37 @@ export const SettingsPage = React.memo(() => {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(updatedSettings),
+        body: JSON.stringify(settings),
       });
 
       if (!response.ok) {
-        toast.error("Failed to update notifications");
+        toast.error(`${messageType} notification setting update failed`);
+        return false;
       }
+
+      toast.success(`${messageType} notification setting updated successfully`);
+      return true;
     } catch (error) {
+      toast.error(`${messageType} notification setting update failed`);
       console.error('Error updating notifications:', error);
+      return false;
     }
-  }, [notificationSettings, token]);
+  }, [token]);
+
+  const handleNotificationChange = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>, type: 'emailNotifications' | 'taskReminders') => {
+      const updatedSettings = { ...notificationSettings, [type]: e.target.checked } as UserSettings;
+      setNotificationSettings(updatedSettings);
+
+      const success = await updateNotificationSettings(updatedSettings, type);
+      if (!success) {
+        const fallbackSettings = { ...notificationSettings, [type]: !e.target.checked } as UserSettings;
+        setNotificationSettings(fallbackSettings);
+      }
+    },
+    [notificationSettings, updateNotificationSettings]
+  );
+
 
   const sections = useMemo(() => [
     {
