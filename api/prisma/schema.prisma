@@ -1,0 +1,68 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id              String    @id @default(uuid())
+  email           String    @unique
+  password        String
+  name            String?
+  tasks           Task[]
+  activities      Activity[]
+  settings        Settings?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model Settings {
+  id                 String   @id @default(uuid())
+  userId             String   @unique
+  user               User     @relation(fields: [userId], references: [id])
+  theme              String   @default("dark") // Can be "light" or "dark"
+  emailNotifications Boolean  @default(false)
+  taskReminders      Boolean  @default(false)
+}
+
+model Task {
+  id          String    @id @default(uuid())
+  title       String
+  description String?
+  priority    Priority  @relation(fields: [priorityId], references: [id])
+  priorityId  String
+  status      Status    @relation(fields: [statusId], references: [id])
+  statusId    String
+  dueDate     DateTime?
+  tags        String[]  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  activities  Activity[]
+}
+
+model Priority {
+  id    String  @id @default(uuid())
+  name  String  @unique
+  tasks Task[]
+}
+
+model Status {
+  id    String  @id @default(uuid())
+  name  String  @unique
+  tasks Task[]
+}
+
+model Activity {
+  id           String   @id @default(uuid())
+  description  String
+  timestamp    DateTime @default(now())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  todoId       String?
+  task         Task?    @relation(fields: [todoId], references: [id])
+}
