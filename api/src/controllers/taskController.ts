@@ -26,3 +26,9 @@ export const updateTaskStatus = catchAsync(async (req: UpdateTaskStatusRequest, 
   const updatedTask = await taskService.updateTaskStatus(req.userId, taskId, statusId);
   sendSuccess(res, updatedTask, 'Task status updated successfully');
 });
+
+export const deleteTask = catchAsync(async (req: AuthenticatedRequest, res: Response) => {
+  const { taskId } = req.params;
+  const result = await taskService.deleteTask(req.userId, taskId);
+  sendSuccess(res, result, 'Task deleted successfully');
+});

@@ -148,18 +148,26 @@ export const useTaskStore = create<TaskStore>((set) => ({
   deleteTask: async (id) => {
     try {
       const token = getAuthToken();
-      await fetch(`${API_URL}/tasks/${id}`, { 
+      const response = await fetch(`${API_URL}/tasks/${id}`, { 
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
       });
+
+      if (!response.ok) {
+        throw new Error(`Failed to delete task: ${response.statusText}`);
+      }
+
       set((state) => ({
         tasks: state.tasks.filter((task) => task.id !== id),
       }));
     } catch (error) {
       console.error('Failed to delete task:', error);
+      // Re-fetch tasks to ensure consistency
+      useTaskStore.getState().fetchTasks();
+      throw error; // Re-throw to handle in the component
     }
   },
 }));

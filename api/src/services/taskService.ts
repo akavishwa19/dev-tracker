@@ -160,3 +160,26 @@ export const updateTaskStatus = async (userId: string, taskId: string, statusId:
     throw new AppError("Failed to update task status", 500);
   }
 };
+
+export const deleteTask = async (userId: string, taskId: string) => {
+  // Check if task exists and belongs to user
+  const task = await prisma.task.findFirst({
+    where: {
+      id: taskId,
+      userId: userId,
+    },
+  });
+
+  if (!task) {
+    throw new AppError("Task not found or unauthorized", 404);
+  }
+
+  // Delete the task
+  await prisma.task.delete({
+    where: {
+      id: taskId,
+    },
+  });
+
+  return { success: true };
+};

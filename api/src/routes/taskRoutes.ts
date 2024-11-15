@@ -1,5 +1,5 @@
 import express, { NextFunction, Response, Request } from "express";
-import { createTask, getTasks, updateTaskStatus } from "../controllers/taskController";
+import { createTask, getTasks, updateTaskStatus, deleteTask } from "../controllers/taskController";
 import { CreateTaskRequest } from "../types/taskTypes";
 import { validateToken } from "../middlewares/authMiddleware";
 
@@ -14,6 +14,10 @@ router.get("/", validateToken, (req: Request, res: Response, next: NextFunction)
 
 router.patch('/:taskId/status', validateToken, (req: Request, res: Response, next: NextFunction) =>
   updateTaskStatus(req, res, next)
+);
+
+router.delete('/:taskId', validateToken, (req: Request, res: Response, next: NextFunction) =>
+  deleteTask(req, res, next)
 );
 
 export default router;
