@@ -25,7 +25,7 @@ export const EditTaskDialog: React.FC<EditTaskDialogProps> = ({
     priorityId: task.priority.id,
     statusId: task.status.id,
     dueDate: task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : '',
-    tags: task.tags || [],
+    tags: task.tags?.join(', ') || '',
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -34,6 +34,7 @@ export const EditTaskDialog: React.FC<EditTaskDialogProps> = ({
       setIsSubmitting(true);
       await updateTask(task.id, {
         ...formData,
+        tags: formData.tags ? formData.tags.split(',').map(tag => tag.trim()) : [],
         dueDate: formData.dueDate ? new Date(formData.dueDate) : undefined,
       });
       onOpenChange(false);
@@ -52,34 +53,11 @@ export const EditTaskDialog: React.FC<EditTaskDialogProps> = ({
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleTagInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && e.currentTarget.value) {
-      e.preventDefault();
-      const newTag = e.currentTarget.value.trim();
-      if (newTag && !formData.tags.includes(newTag)) {
-        setFormData((prev) => ({
-          ...prev,
-          tags: [...prev.tags, newTag],
-        }));
-      }
-      e.currentTarget.value = '';
-    }
-  };
-
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
-        <Dialog.Overlay 
-          className="bg-black/80 fixed inset-0 z-50
-            animate-in fade-in duration-300" 
-        />
-        <Dialog.Content 
-          className="fixed left-[50%] top-[50%] z-50 w-full max-w-lg translate-x-[-50%] translate-y-[-50%] 
-            rounded-lg border bg-white p-6 shadow-lg 
-            animate-in fade-in zoom-in-95 slide-in-from-bottom-[48%]
-            duration-300
-            dark:border-gray-800 dark:bg-gray-900"
-        >
+        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
+        <Dialog.Content className="fixed left-[50%] top-[50%] z-50 w-full max-w-lg translate-x-[-50%] translate-y-[-50%] rounded-lg border bg-white p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] dark:border-gray-800 dark:bg-gray-900">
           <div className="flex items-start justify-between mb-4">
             <Dialog.Title className="text-xl font-semibold text-gray-900 dark:text-white">
               Edit Task
@@ -102,7 +80,7 @@ export const EditTaskDialog: React.FC<EditTaskDialogProps> = ({
                 value={formData.title}
                 onChange={handleChange}
                 required
-                className="w-full px-3 py-2 text-gray-900 border rounded-md dark:text-white dark:bg-gray-800 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-2 text-gray-900 border rounded-md dark:text-white dark:bg-gray-800 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
@@ -117,7 +95,7 @@ export const EditTaskDialog: React.FC<EditTaskDialogProps> = ({
                 value={formData.description}
                 onChange={handleChange}
                 rows={3}
-                className="w-full px-3 py-2 text-gray-900 border rounded-md dark:text-white dark:bg-gray-800 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-2 text-gray-900 border rounded-md dark:text-white dark:bg-gray-800 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
@@ -132,7 +110,7 @@ export const EditTaskDialog: React.FC<EditTaskDialogProps> = ({
                   name="priorityId"
                   value={formData.priorityId}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 text-gray-900 border rounded-md dark:text-white dark:bg-gray-800 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full px-3 py-2 text-gray-900 border rounded-md dark:text-white dark:bg-gray-800 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   {priorities.map(priority => (
                     <option key={priority.id} value={priority.id}>
@@ -151,7 +129,7 @@ export const EditTaskDialog: React.FC<EditTaskDialogProps> = ({
                   name="statusId"
                   value={formData.statusId}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 text-gray-900 border rounded-md dark:text-white dark:bg-gray-800 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full px-3 py-2 text-gray-900 border rounded-md dark:text-white dark:bg-gray-800 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   {statuses.map(status => (
                     <option key={status.id} value={status.id}>
@@ -173,40 +151,23 @@ export const EditTaskDialog: React.FC<EditTaskDialogProps> = ({
                 name="dueDate"
                 value={formData.dueDate}
                 onChange={handleChange}
-                className="w-full px-3 py-2 text-gray-900 border rounded-md dark:text-white dark:bg-gray-800 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-2 text-gray-900 border rounded-md dark:text-white dark:bg-gray-800 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
             {/* Tags */}
             <div className="space-y-2">
               <label htmlFor="tags" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Tags
+                Tags (comma-separated)
               </label>
-              <div className="flex flex-wrap gap-2 mb-2">
-                {formData.tags.map((tag, index) => (
-                  <span
-                    key={index}
-                    className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200"
-                  >
-                    {tag}
-                    <button
-                      type="button"
-                      onClick={() => setFormData(prev => ({
-                        ...prev,
-                        tags: prev.tags.filter((_, i) => i !== index)
-                      }))}
-                      className="ml-1 text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
-                    >
-                      ×
-                    </button>
-                  </span>
-                ))}
-              </div>
               <input
                 type="text"
-                placeholder="Type a tag and press Enter"
-                onKeyDown={handleTagInput}
-                className="w-full px-3 py-2 text-gray-900 border rounded-md dark:text-white dark:bg-gray-800 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                id="tags"
+                name="tags"
+                value={formData.tags}
+                onChange={handleChange}
+                placeholder="e.g., frontend, bug, feature"
+                className="w-full px-3 py-2 text-gray-900 border rounded-md dark:text-white dark:bg-gray-800 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
@@ -223,7 +184,7 @@ export const EditTaskDialog: React.FC<EditTaskDialogProps> = ({
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? 'Saving...' : 'Save Changes'}
               </button>

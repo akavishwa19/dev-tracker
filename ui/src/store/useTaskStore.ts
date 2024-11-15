@@ -5,14 +5,7 @@ import { getAuthToken } from '../utils/auth';
 
 interface TaskStore {
   tasks: Task[];
-  filteredTasks: Task[];
-  filters: {
-    search: string;
-    priority: string;
-    status: string;
-  };
   setTasks: (tasks: Task[]) => void;
-  setFilters: (filters: Partial<TaskStore['filters']>) => void;
   fetchTasks: () => void;
   addTask: (task: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'priority' | 'status'>) => Promise<void>;
   updateTask: (taskId: string, updates: Partial<Task>) => Promise<void>;
@@ -21,46 +14,10 @@ interface TaskStore {
   moveTask: (taskId: string, newStatusId: string) => Promise<void>;
 }
 
-export const useTaskStore = create<TaskStore>((set, get) => ({
+export const useTaskStore = create<TaskStore>((set) => ({
   tasks: [],
-  filteredTasks: [],
-  filters: {
-    search: '',
-    priority: 'All',
-    status: 'All',
-  },
 
-  setTasks: (tasks) => {
-    set({ tasks });
-    // Apply current filters to the new tasks
-    const store = get();
-    const filtered = store.tasks.filter(task => {
-      const matchesSearch = task.title.toLowerCase().includes(store.filters.search.toLowerCase()) ||
-                          task.description.toLowerCase().includes(store.filters.search.toLowerCase());
-      const matchesPriority = store.filters.priority === 'All' || task.priority.id === store.filters.priority;
-      const matchesStatus = store.filters.status === 'All' || task.status.id === store.filters.status;
-      
-      return matchesSearch && matchesPriority && matchesStatus;
-    });
-    set({ filteredTasks: filtered });
-  },
-
-  setFilters: (newFilters) => {
-    const store = get();
-    const updatedFilters = { ...store.filters, ...newFilters };
-    set({ filters: updatedFilters });
-    
-    // Apply updated filters to tasks
-    const filtered = store.tasks.filter(task => {
-      const matchesSearch = task.title.toLowerCase().includes(updatedFilters.search.toLowerCase()) ||
-                          task.description.toLowerCase().includes(updatedFilters.search.toLowerCase());
-      const matchesPriority = updatedFilters.priority === 'All' || task.priority.id === updatedFilters.priority;
-      const matchesStatus = updatedFilters.status === 'All' || task.status.id === updatedFilters.status;
-      
-      return matchesSearch && matchesPriority && matchesStatus;
-    });
-    set({ filteredTasks: filtered });
-  },
+  setTasks: (tasks) => set({ tasks }),
 
   fetchTasks: async () => {
     try {
@@ -83,17 +40,6 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
       }));
       
       set({ tasks: tasksWithDates });
-      // Apply current filters to the new tasks
-      const store = get();
-      const filtered = store.tasks.filter(task => {
-        const matchesSearch = task.title.toLowerCase().includes(store.filters.search.toLowerCase()) ||
-                            task.description.toLowerCase().includes(store.filters.search.toLowerCase());
-        const matchesPriority = store.filters.priority === 'All' || task.priority.id === store.filters.priority;
-        const matchesStatus = store.filters.status === 'All' || task.status.id === store.filters.status;
-        
-        return matchesSearch && matchesPriority && matchesStatus;
-      });
-      set({ filteredTasks: filtered });
     } catch (error) {
       console.error('Failed to fetch tasks:', error);
     }
@@ -121,17 +67,6 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
       };
       
       set((state) => ({ tasks: [...state.tasks, taskWithDates] }));
-      // Apply current filters to the new tasks
-      const store = get();
-      const filtered = store.tasks.filter(task => {
-        const matchesSearch = task.title.toLowerCase().includes(store.filters.search.toLowerCase()) ||
-                            task.description.toLowerCase().includes(store.filters.search.toLowerCase());
-        const matchesPriority = store.filters.priority === 'All' || task.priority.id === store.filters.priority;
-        const matchesStatus = store.filters.status === 'All' || task.status.id === store.filters.status;
-        
-        return matchesSearch && matchesPriority && matchesStatus;
-      });
-      set({ filteredTasks: filtered });
     } catch (error) {
       console.error('Failed to add task:', error);
     }
@@ -160,17 +95,6 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
           } : task
         ),
       }));
-      // Apply current filters to the new tasks
-      const store = get();
-      const filtered = store.tasks.filter(task => {
-        const matchesSearch = task.title.toLowerCase().includes(store.filters.search.toLowerCase()) ||
-                            task.description.toLowerCase().includes(store.filters.search.toLowerCase());
-        const matchesPriority = store.filters.priority === 'All' || task.priority.id === store.filters.priority;
-        const matchesStatus = store.filters.status === 'All' || task.status.id === store.filters.status;
-        
-        return matchesSearch && matchesPriority && matchesStatus;
-      });
-      set({ filteredTasks: filtered });
     } catch (error) {
       console.error('Failed to update task:', error);
     }
@@ -199,17 +123,6 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
           } : task
         ),
       }));
-      // Apply current filters to the new tasks
-      const store = get();
-      const filtered = store.tasks.filter(task => {
-        const matchesSearch = task.title.toLowerCase().includes(store.filters.search.toLowerCase()) ||
-                            task.description.toLowerCase().includes(store.filters.search.toLowerCase());
-        const matchesPriority = store.filters.priority === 'All' || task.priority.id === store.filters.priority;
-        const matchesStatus = store.filters.status === 'All' || task.status.id === store.filters.status;
-        
-        return matchesSearch && matchesPriority && matchesStatus;
-      });
-      set({ filteredTasks: filtered });
     } catch (error) {
       console.error('Failed to update task status:', error);
     }
@@ -257,17 +170,6 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
             : item
         ),
       }));
-      // Apply current filters to the new tasks
-      const store = get();
-      const filtered = store.tasks.filter(task => {
-        const matchesSearch = task.title.toLowerCase().includes(store.filters.search.toLowerCase()) ||
-                            task.description.toLowerCase().includes(store.filters.search.toLowerCase());
-        const matchesPriority = store.filters.priority === 'All' || task.priority.id === store.filters.priority;
-        const matchesStatus = store.filters.status === 'All' || task.status.id === store.filters.status;
-        
-        return matchesSearch && matchesPriority && matchesStatus;
-      });
-      set({ filteredTasks: filtered });
     } catch (error) {
       console.error('Failed to move task:', error);
       // Fetch fresh tasks from the server on error
@@ -293,17 +195,6 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
       set((state) => ({
         tasks: state.tasks.filter((task) => task.id !== id),
       }));
-      // Apply current filters to the new tasks
-      const store = get();
-      const filtered = store.tasks.filter(task => {
-        const matchesSearch = task.title.toLowerCase().includes(store.filters.search.toLowerCase()) ||
-                            task.description.toLowerCase().includes(store.filters.search.toLowerCase());
-        const matchesPriority = store.filters.priority === 'All' || task.priority.id === store.filters.priority;
-        const matchesStatus = store.filters.status === 'All' || task.status.id === store.filters.status;
-        
-        return matchesSearch && matchesPriority && matchesStatus;
-      });
-      set({ filteredTasks: filtered });
     } catch (error) {
       console.error('Failed to delete task:', error);
       // Re-fetch tasks to ensure consistency

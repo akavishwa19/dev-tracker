@@ -18,17 +18,8 @@ export const ViewTaskDialog: React.FC<ViewTaskDialogProps> = ({
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
-        <Dialog.Overlay 
-          className="bg-black/80 fixed inset-0 z-50
-            animate-in fade-in duration-300" 
-        />
-        <Dialog.Content 
-          className="fixed left-[50%] top-[50%] z-50 w-full max-w-lg translate-x-[-50%] translate-y-[-50%] 
-            rounded-lg border bg-white p-6 shadow-lg 
-            animate-in fade-in zoom-in-95 slide-in-from-bottom-[48%]
-            duration-300
-            dark:border-gray-800 dark:bg-gray-900"
-        >
+        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
+        <Dialog.Content className="fixed left-[50%] top-[50%] z-50 w-full max-w-lg translate-x-[-50%] translate-y-[-50%] rounded-lg border bg-white p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] dark:border-gray-800 dark:bg-gray-900">
           {/* Header */}
           <div className="flex items-start justify-between mb-4">
             <Dialog.Title className="text-xl font-semibold text-gray-900 dark:text-white">
