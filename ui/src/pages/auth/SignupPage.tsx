@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Github, Mail, Lock, User, ArrowRight } from 'lucide-react';
+import { Github, Mail, Lock, ArrowRight } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { toast } from 'react-toastify';
 
@@ -26,7 +26,7 @@ export const SignupPage = () => {
       setLoading(true);
       await signUp(email, password);
       toast.success('User created successfully');
-      navigate('/dashboard');
+      navigate('/login');
     } catch (err: unknown) {
       console.log(err);
       if (err instanceof Error) {
