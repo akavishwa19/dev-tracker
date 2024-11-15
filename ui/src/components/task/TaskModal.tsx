@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, Tag } from 'lucide-react';
 import { Task, TaskPriority, TaskStatus } from '../../types/task';
 import { useTaskStore } from '../../store/useTaskStore';
-import { Dialog } from '@headlessui/react';
+import * as Dialog from '@radix-ui/react-dialog';
 
 interface TaskModalProps {
   isOpen: boolean;
@@ -88,8 +88,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, task, pri
     <Dialog.Root open={isOpen} onOpenChange={onClose}>
       <Dialog.Portal>
         <Dialog.Overlay 
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm
-            animate-in fade-in duration-200" 
+          className="fixed inset-0 duration-200 bg-black/40 backdrop-blur-sm animate-in fade-in" 
         />
         <Dialog.Content 
           className="fixed left-[50%] top-[50%] z-50 w-full max-w-lg translate-x-[-50%] translate-y-[-50%] 
