@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { TaskBoard } from '../components/task/TaskBoard';
+import { TaskList } from '../components/task/TaskList';
 import { TaskStats } from '../components/dashboard/TaskStats';
 import { RecentActivity } from '../components/dashboard/RecentActivity';
 import { LayoutGrid, ListTodo, Search } from 'lucide-react';
@@ -85,7 +86,7 @@ export const DashboardPage = () => {
           className="overflow-hidden bg-white rounded-xl shadow-sm dark:bg-gray-800"
         >
           <div className="p-6">
-            <TaskBoard />
+            {view === 'board' ? <TaskBoard /> : <TaskList />}
           </div>
         </motion.div>
       </div>
