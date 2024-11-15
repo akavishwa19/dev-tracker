@@ -10,7 +10,7 @@ import { Task } from '../../types/task';
 import { useTaskMetadataStore } from '../../store/TaskMetadataStore';
 
 export const TaskBoard = () => {
-  const { tasks, moveTask, fetchTasks } = useTaskStore();
+  const { tasks, filteredTasks, fetchTasks, updateTaskStatus, moveTask } = useTaskStore();
   const { priorities, statuses, fetchMetadata } = useTaskMetadataStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | undefined>();
@@ -30,13 +30,9 @@ export const TaskBoard = () => {
     }
   };
 
-  const filteredTasks = tasks.filter((task) => {
-    const matchesSearch = task.title.toLowerCase().includes(search.toLowerCase()) ||
-      task.description.toLowerCase().includes(search.toLowerCase());
-    const matchesPriority = priority === 'All' || task.priority.name === priority;
-    const matchesStatus = status === 'All' || task.status.name === status;
-    return matchesSearch && matchesPriority && matchesStatus;
-  });
+  const getTasksByStatus = (statusId: string) => {
+    return filteredTasks.filter((task) => task.status.id === statusId);
+  };
 
   const handleTaskClick = (task: Task) => {
     setSelectedTask(task);
@@ -82,7 +78,7 @@ export const TaskBoard = () => {
               key={id}
               id={id}
               title={name}
-              tasks={filteredTasks.filter((task) => task.status.id === id)}
+              tasks={getTasksByStatus(id)}
               onTaskClick={handleTaskClick}
             />
           ))}
