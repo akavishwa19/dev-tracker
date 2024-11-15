@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // components/TaskFilters.tsx
 import { FC } from 'react';
 import { TaskPriority, TaskStatus } from '../../types/task';
@@ -30,14 +31,14 @@ export const TaskFilters: FC<TaskFiltersProps> = ({
       value={search}
       onChange={(e) => setSearch(e.target.value)}
       placeholder="Search tasks..."
-      className="p-2 border rounded dark:text-gray-700"
+      className="w-full p-2 border rounded dark:text-gray-700"
     />
 
     {/* Priority Filter */}
-    <select
+    {/* <select
       value={priority}
       onChange={(e) => setPriority(e.target.value as string)}
-      className="p-2 ml-2 border rounded dark:text-gray-700"
+      className="w-full p-2 border rounded md:w-1/4 dark:text-gray-700"
     >
       <option value="All">All Priorities</option>
       {priorities.map(({ id, name }) => (
@@ -45,10 +46,10 @@ export const TaskFilters: FC<TaskFiltersProps> = ({
           {name}
         </option>
       ))}
-    </select>
+    </select> */}
 
     {/* Status Filter */}
-    <select
+    {/* <select
       value={status}
       onChange={(e) => setStatus(e.target.value as string)}
       className="p-2 ml-2 border rounded dark:text-gray-700"
@@ -59,6 +60,6 @@ export const TaskFilters: FC<TaskFiltersProps> = ({
           {name}
         </option>
       ))}
-    </select>
+    </select> */}
   </div>
 );

@@ -27,8 +27,6 @@ export const TaskStats = () => {
   ];
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-sm dark:bg-gray-800">
-      <h2 className="mb-6 text-xl font-semibold">Task Overview</h2>
       <div className="space-y-6">
         {stats.map((stat, index) => (
           <motion.div
@@ -48,6 +46,5 @@ export const TaskStats = () => {
           </motion.div>
         ))}
       </div>
-    </div>
   );
 };

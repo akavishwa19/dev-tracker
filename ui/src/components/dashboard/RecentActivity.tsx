@@ -1,6 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTaskStore } from '../../store/useTaskStore';
-import { Clock } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Task } from '../../types/task';
 
@@ -51,11 +50,7 @@ export const RecentActivity = () => {
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-sm dark:bg-gray-800">
-      <h2 className="flex items-center mb-6 text-xl font-semibold">
-        <Clock className="w-5 h-5 mr-2" />
-        Recent Activity
-      </h2>
+    <div className="bg-white rounded-lg shadow-sm  dark:bg-gray-800">
       <div className="space-y-4">
         <AnimatePresence initial={false} mode="popLayout">
           {recentTasks.map((task) => (

@@ -1,5 +1,5 @@
-import { motion } from 'framer-motion';
-import { Settings, Moon, Bell, User, Pencil, Check } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Settings, Moon, Bell, User, Pencil, Check, Shield, ChevronRight } from 'lucide-react';
 import { useTheme } from '../hooks/useTheme';
 import { useAuth } from '../contexts/AuthContext';
 import { useCallback, useEffect, useState, useMemo } from 'react';
@@ -8,18 +8,14 @@ import { toast } from 'react-toastify';
 import { UserSettings } from '../types/userSettings';
 import React from 'react';
 
+const MotionButton = motion.button;
+const MotionInput = motion(motion.input);
+
 export const SettingsPage = React.memo(() => {
   const { theme, toggleTheme } = useTheme();
   const { user } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
-
-  // public isEditing : boolean = false;
-
-  // onEdit() {
-  //   this.isEditing = !this.isEditing;
-  // }
-
-
+  const [activeSection, setActiveSection] = useState<string | null>(null);
   const [profileForm, setProfileForm] = useState({ name: user?.name || '' });
   const [notificationSettings, setNotificationSettings] = useState<UserSettings | null>(null);
 
@@ -50,8 +46,6 @@ export const SettingsPage = React.memo(() => {
     if (!isEditing)
       return setIsEditing(true);
 
-    // this.isEditing = true;
-
     try {
       const response = await fetch(`${API_URL}/settings/user/profile`, {
         method: 'PUT',
@@ -65,7 +59,6 @@ export const SettingsPage = React.memo(() => {
       if (response.ok) {
         toast.success("Display name updated");
         setIsEditing(false);
-        // this.isEditing = false;
       } else {
         toast.error("Failed to update profile");
       }
@@ -120,37 +113,101 @@ export const SettingsPage = React.memo(() => {
     [notificationSettings, updateNotificationSettings]
   );
 
-
   const sections = useMemo(() => [
     {
       title: 'Theme',
       icon: Moon,
+      description: 'Customize your app appearance',
       content: (
-        <div className="flex items-center justify-between">
-          <span>Dark Mode</span>
-          <button
-            onClick={toggleTheme}
-            className={`relative inline-flex h-6 w-11 items-center rounded-full ${theme === 'dark' ? 'bg-indigo-600' : 'bg-gray-200'}`}
-          >
-            <span
-              className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${theme === 'dark' ? 'translate-x-6' : 'translate-x-1'}`}
-            />
-          </button>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-gray-700">
+            <div className="space-y-1">
+              <span className="font-medium">Dark Mode</span>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Switch between light and dark themes</p>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                checked={theme === 'dark'}
+                onChange={toggleTheme}
+                className="sr-only peer"
+              />
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 
+                          peer-focus:ring-indigo-300 dark:peer-focus:ring-indigo-800 rounded-full 
+                          peer dark:bg-gray-600 peer-checked:after:translate-x-full 
+                          peer-checked:after:border-white after:content-[''] after:absolute 
+                          after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 
+                          after:border after:rounded-full after:h-5 after:w-5 after:transition-all 
+                          dark:border-gray-600 peer-checked:bg-indigo-600">
+                <motion.span
+                  className="absolute inset-0 flex items-center justify-center"
+                  initial={false}
+                  animate={{ opacity: theme === 'dark' ? 1 : 0 }}
+                >
+                  {/* <Moon className="w-3 h-3 ml-6 text-white" /> */}
+                </motion.span>
+                <motion.span
+                  className="absolute inset-0 flex items-center justify-center"
+                  initial={false}
+                  animate={{ opacity: theme === 'dark' ? 0 : 1 }}
+                >
+                  {/* <Sun className="w-3 h-3 ml-1 text-gray-500" /> */}
+                </motion.span>
+              </div>
+            </label>
+          </div>
         </div>
       ),
     },
     {
       title: 'Notifications',
       icon: Bell,
+      description: 'Manage your notification preferences',
       content: (
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <span>Email Notifications</span>
-            <input checked={notificationSettings?.emailNotifications || false} type="checkbox" className="text-indigo-600 rounded" onChange={(e) => handleNotificationChange(e, 'emailNotifications')} />
-          </div>
-          <div className="flex items-center justify-between">
-            <span>Task Reminders</span>
-            <input checked={notificationSettings?.taskReminders || false} type="checkbox" className="text-indigo-600 rounded" onChange={(e) => handleNotificationChange(e, 'taskReminders')} />
+          <div className="p-3 space-y-4 rounded-lg bg-gray-50 dark:bg-gray-700">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <span className="font-medium">Email Notifications</span>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Receive updates via email</p>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={notificationSettings?.emailNotifications || false}
+                  onChange={(e) => handleNotificationChange(e, 'emailNotifications')}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 
+                            peer-focus:ring-indigo-300 dark:peer-focus:ring-indigo-800 rounded-full 
+                            peer dark:bg-gray-600 peer-checked:after:translate-x-full 
+                            peer-checked:after:border-white after:content-[''] after:absolute 
+                            after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 
+                            after:border after:rounded-full after:h-5 after:w-5 after:transition-all 
+                            dark:border-gray-600 peer-checked:bg-indigo-600"></div>
+              </label>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <span className="font-medium">Task Reminders</span>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Get notified about upcoming tasks</p>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={notificationSettings?.taskReminders || false}
+                  onChange={(e) => handleNotificationChange(e, 'taskReminders')}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 
+                            peer-focus:ring-indigo-300 dark:peer-focus:ring-indigo-800 rounded-full 
+                            peer dark:bg-gray-600 peer-checked:after:translate-x-full 
+                            peer-checked:after:border-white after:content-[''] after:absolute 
+                            after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 
+                            after:border after:rounded-full after:h-5 after:w-5 after:transition-all 
+                            dark:border-gray-600 peer-checked:bg-indigo-600"></div>
+              </label>
+            </div>
           </div>
         </div>
       ),
@@ -158,44 +215,98 @@ export const SettingsPage = React.memo(() => {
     {
       title: 'Profile',
       icon: User,
+      description: 'Manage your personal information',
       content: (
-        <form onSubmit={handleProfileSubmit}>
-          <div>
-            <label className="block mb-1 text-sm font-medium">Display Name</label>
-            <input
-              name="name"
-              type="text"
-              className={`w-full p-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${isEditing ? 'dark:text-gray-700' : ''}`}
-              value={profileForm.name}
-              disabled={!isEditing}
-              onChange={handleInputChange}
-            />
+        <form onSubmit={handleProfileSubmit} className="space-y-4">
+          <div className="p-3 space-y-4 rounded-lg bg-gray-50 dark:bg-gray-700">
+            <div>
+              <label className="block mb-1 text-sm font-medium">Display Name</label>
+              <MotionInput
+                name="name"
+                type="text"
+                className={`w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 
+                         focus:ring-indigo-500 dark:bg-gray-600 dark:border-gray-500 
+                         ${isEditing ? 'dark:text-white' : 'dark:text-gray-400'}`}
+                value={profileForm.name}
+                disabled={!isEditing}
+                onChange={handleInputChange}
+                animate={{ scale: isEditing ? 1 : 0.98 }}
+                transition={{ duration: 0.2 }}
+              />
+            </div>
+            <div>
+              <label className="block mb-1 text-sm font-medium">Email</label>
+              <input
+                type="email"
+                value={user?.email}
+                disabled
+                className="w-full p-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm dark:bg-gray-600 dark:border-gray-500 dark:text-gray-400"
+              />
+            </div>
           </div>
-          <div className="mt-4">
-            <label className="block mb-1 text-sm font-medium">Email</label>
-            <input
-              type="email"
-              value={user?.email}
-              disabled
-              className="w-full p-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-            />
-          </div>
-          {isEditing && (
-            <button type="submit" className="w-full py-2 mt-4 text-white bg-indigo-600 rounded-md hover:bg-indigo-500">
-              Save Changes
-            </button>
-          )}
+          <AnimatePresence>
+            {isEditing && (
+              <MotionButton
+                type="submit"
+                className="w-full py-2 text-white transition-colors bg-indigo-600 rounded-lg hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                Save Changes
+              </MotionButton>
+            )}
+          </AnimatePresence>
         </form>
       ),
     },
-  ], [toggleTheme, theme, notificationSettings?.emailNotifications, notificationSettings?.taskReminders, handleProfileSubmit, profileForm.name, isEditing, handleInputChange, user?.email, handleNotificationChange]);
+    {
+      title: 'Security',
+      icon: Shield,
+      description: 'Manage your account security',
+      content: (
+        <div className="space-y-4">
+          <div className="p-3 rounded-lg bg-gray-50 dark:bg-gray-700">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <span className="font-medium">Change Password</span>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Update your account password</p>
+              </div>
+              <ChevronRight className="w-5 h-5 text-gray-400" />
+            </div>
+          </div>
+        </div>
+      ),
+    },
+  ], [
+    toggleTheme,
+    theme,
+    notificationSettings?.emailNotifications,
+    notificationSettings?.taskReminders,
+    handleProfileSubmit,
+    profileForm.name,
+    isEditing,
+    handleInputChange,
+    user?.email,
+    handleNotificationChange,
+  ]);
 
   return (
-    <div className="max-w-2xl px-4 py-8 mx-auto">
-      <div className="flex items-center mb-8 space-x-2">
-        <Settings className="w-6 h-6 text-indigo-600" />
-        <h1 className="text-2xl font-bold">Settings</h1>
-      </div>
+    <div className="max-w-3xl px-4 py-8 mx-auto">
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex items-center mb-8 space-x-3"
+      >
+        <Settings className="w-8 h-8 text-indigo-600" />
+        <div>
+          <h1 className="text-3xl font-bold">Settings</h1>
+          <p className="text-gray-500 dark:text-gray-400">Manage your account preferences</p>
+        </div>
+      </motion.div>
+
       <div className="space-y-6">
         {sections.map((section, index) => (
           <motion.div
@@ -203,23 +314,46 @@ export const SettingsPage = React.memo(() => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
-            className="p-6 bg-white rounded-lg shadow-sm dark:bg-gray-800"
+            className="overflow-hidden transition-shadow bg-white shadow-sm rounded-xl dark:bg-gray-800 hover:shadow-md"
+            onHoverStart={() => setActiveSection(section.title)}
+            onHoverEnd={() => setActiveSection(null)}
           >
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center space-x-2">
-                <section.icon className="w-5 h-5 text-indigo-600" />
-                <h2 className="text-lg font-medium">{section.title}</h2>
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center space-x-3">
+                  <motion.div
+                    animate={{
+                      scale: activeSection === section.title ? 1.1 : 1,
+                      rotate: activeSection === section.title ? 5 : 0,
+                    }}
+                    className="p-2 bg-indigo-100 rounded-lg dark:bg-indigo-900"
+                  >
+                    <section.icon className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                  </motion.div>
+                  <div>
+                    <h2 className="text-lg font-medium">{section.title}</h2>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{section.description}</p>
+                  </div>
+                </div>
+                {section.title === 'Profile' && (
+                  <MotionButton
+                    onClick={() => setIsEditing((prev) => !prev)}
+                    className="p-2 text-indigo-600 rounded-lg hover:bg-indigo-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {isEditing ? <Check className="w-5 h-5" /> : <Pencil className="w-5 h-5" />}
+                  </MotionButton>
+                )}
               </div>
-              {section.title === 'Profile' && (
-                <button
-                  onClick={() => setIsEditing((prev) => !prev)}
-                  className="p-1 text-indigo-600 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
-                  {isEditing ? <Check className="w-4 h-4" /> : <Pencil className="w-4 h-4" />}
-                </button>
-              )}
+              <motion.div
+                initial={false}
+                animate={{ height: 'auto' }}
+                className="relative"
+              >
+                {section.content}
+              </motion.div>
             </div>
-            {section.content}
           </motion.div>
         ))}
       </div>
