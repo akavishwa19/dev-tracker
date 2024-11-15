@@ -1,6 +1,6 @@
 import prisma from "../config/database";
 import { AppError } from "../utils/errorHandler";
-import { Task, Priority, Status } from "@prisma/client";
+import { Task } from "@prisma/client";
 
 interface CreateTaskData {
   title: string;
@@ -83,8 +83,8 @@ export const getTasksByUser = async (userId: string) => {
   try {
     const tasks = await prisma.task.findMany({
       where: { userId },
-      include: { 
-        priority: true, 
+      include: {
+        priority: true,
         status: true,
         activities: {
           orderBy: {
@@ -108,9 +108,9 @@ export const updateTaskStatus = async (userId: string, taskId: string, statusId:
   try {
     // Verify task exists and belongs to user
     const existingTask = await prisma.task.findFirst({
-      where: { 
+      where: {
         id: taskId,
-        userId 
+        userId
       }
     });
 
@@ -131,13 +131,13 @@ export const updateTaskStatus = async (userId: string, taskId: string, statusId:
       // Update the task's status
       const task = await prisma.task.update({
         where: { id: taskId },
-        data: { 
+        data: {
           statusId,
           updatedAt: new Date()
         },
-        include: { 
-          priority: true, 
-          status: true 
+        include: {
+          priority: true,
+          status: true
         },
       });
 
@@ -159,6 +159,59 @@ export const updateTaskStatus = async (userId: string, taskId: string, statusId:
     console.error("Error updating task status:", error);
     throw new AppError("Failed to update task status", 500);
   }
+};
+
+export const updateTask = async (userId: string, taskId: string, updates: Partial<Task>) => {
+  // Check if task exists and belongs to user
+  const task = await prisma.task.findFirst({
+    where: {
+      id: taskId,
+      userId: userId,
+    },
+  });
+
+  if (!task) {
+    throw new AppError("Task not found or unauthorized", 404);
+  }
+
+  // Validate priority and status if they are being updated
+  if (updates.priorityId) {
+    const priority = await prisma.priority.findUnique({
+      where: { id: updates.priorityId },
+    });
+    if (!priority) {
+      throw new AppError("Invalid priority", 400);
+    }
+  }
+
+  if (updates.statusId) {
+    const status = await prisma.status.findUnique({
+      where: { id: updates.statusId },
+    });
+    if (!status) {
+      throw new AppError("Invalid status", 400);
+    }
+  }
+
+  // Update the task
+  const updatedTask = await prisma.task.update({
+    where: { id: taskId },
+    data: {
+      title: updates.title as string,
+      description: updates.description as string,
+      priorityId: updates.priorityId,
+      statusId: updates.statusId,
+      dueDate: updates.dueDate as Date,
+      tags: updates.tags || [],
+      userId: userId,
+    },
+    include: {
+      priority: true,
+      status: true,
+    },
+  });
+
+  return updatedTask;
 };
 
 export const deleteTask = async (userId: string, taskId: string) => {

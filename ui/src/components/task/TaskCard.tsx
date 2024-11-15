@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Clock, Tag, Eye, Pencil, Trash2 } from 'lucide-react';
 import type { Task } from '../../types/task';
 import { useTaskStore } from '../../store/useTaskStore';
@@ -11,9 +11,9 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from '../ui/alert-dialog';
 import { ViewTaskDialog } from './ViewTaskDialog';
+import { EditTaskDialog } from './EditTaskDialog';
 
 interface TaskCardProps {
   task: Task;
@@ -21,11 +21,13 @@ interface TaskCardProps {
   onEdit?: (task: Task) => void;
 }
 
-export const TaskCard: React.FC<TaskCardProps> = ({ task, onClick, onEdit }) => {
+export const TaskCard: React.FC<TaskCardProps> = ({ task, onClick }) => {
   const deleteTask = useTaskStore((state) => state.deleteTask);
-  const [isDeleting, setIsDeleting] = React.useState(false);
-  const [isViewDialogOpen, setIsViewDialogOpen] = React.useState(false);
-  
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isViewOpen, setIsViewOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [showDeleteAlert, setShowDeleteAlert] = useState(false);
+
   const priorityColors = {
     Low: 'bg-blue-100 text-blue-800',
     Medium: 'bg-yellow-100 text-yellow-800',
@@ -44,18 +46,6 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onClick, onEdit }) => 
     }
   };
 
-  const handleEdit = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (onEdit) {
-      onEdit(task);
-    }
-  };
-
-  const handleView = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsViewDialogOpen(true);
-  };
-
   return (
     <>
       <div
@@ -67,52 +57,25 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onClick, onEdit }) => 
           <h3 className="flex-1 font-medium text-gray-900 dark:text-gray-100 line-clamp-1">
             {task.title}
           </h3>
-          <div className="flex items-center gap-2 ml-2">
+          <div className="flex items-center gap-2">
             <button
-              onClick={handleView}
-              className="p-1 text-gray-500 transition-colors rounded hover:bg-blue-100 hover:text-blue-600"
+              onClick={() => setIsViewOpen(true)}
+              className="p-1 text-gray-500 rounded-full hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
             >
               <Eye className="w-4 h-4" />
             </button>
             <button
-              onClick={handleEdit}
-              className="p-1 text-gray-500 transition-colors rounded hover:bg-green-100 hover:text-green-600"
+              onClick={() => setIsEditOpen(true)}
+              className="p-1 text-gray-500 rounded-full hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
             >
               <Pencil className="w-4 h-4" />
             </button>
-            <AlertDialog>
-              <AlertDialogTrigger asChild onClick={(e) => e.stopPropagation()}>
-                <button
-                  className="p-1 text-gray-500 transition-colors rounded hover:bg-red-100 hover:text-red-600"
-                  disabled={isDeleting}
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This action cannot be undone. This will permanently delete the task
-                    "{task.title}" and remove it from our servers.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel onClick={(e) => e.stopPropagation()}>
-                    Cancel
-                  </AlertDialogCancel>
-                  <AlertDialogAction
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDelete();
-                    }}
-                    disabled={isDeleting}
-                  >
-                    {isDeleting ? 'Deleting...' : 'Delete Task'}
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+            <button
+              onClick={() => setShowDeleteAlert(true)}
+              className="p-1 text-gray-500 rounded-full hover:bg-gray-100 hover:text-red-600 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-red-500"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
           </div>
         </div>
 
@@ -154,9 +117,43 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onClick, onEdit }) => 
       {/* View Task Dialog */}
       <ViewTaskDialog
         task={task}
-        open={isViewDialogOpen}
-        onOpenChange={setIsViewDialogOpen}
+        open={isViewOpen}
+        onOpenChange={setIsViewOpen}
       />
+
+      {/* Edit Task Dialog */}
+      <EditTaskDialog
+        task={task}
+        open={isEditOpen}
+        onOpenChange={setIsEditOpen}
+      />
+
+      {/* Delete Task Dialog */}
+      <AlertDialog open={showDeleteAlert} onOpenChange={setShowDeleteAlert}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the task
+              "{task.title}" and remove it from our servers.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={(e) => e.stopPropagation()}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDelete();
+              }}
+              disabled={isDeleting}
+            >
+              {isDeleting ? 'Deleting...' : 'Delete Task'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 };

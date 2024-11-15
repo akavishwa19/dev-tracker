@@ -5,15 +5,19 @@ import { getAuthToken } from '../utils/auth';
 
 interface TaskStore {
   tasks: Task[];
+  setTasks: (tasks: Task[]) => void;
   fetchTasks: () => void;
   addTask: (task: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'priority' | 'status'>) => Promise<void>;
-  updateTask: (id: string, updates: Partial<Task>) => Promise<void>;
-  deleteTask: (id: string) => Promise<void>;
+  updateTask: (taskId: string, updates: Partial<Task>) => Promise<void>;
+  updateTaskStatus: (taskId: string, statusId: string) => Promise<void>;
+  deleteTask: (taskId: string) => Promise<void>;
   moveTask: (taskId: string, newStatusId: string) => Promise<void>;
 }
 
 export const useTaskStore = create<TaskStore>((set) => ({
   tasks: [],
+
+  setTasks: (tasks) => set({ tasks }),
 
   fetchTasks: async () => {
     try {
@@ -68,10 +72,10 @@ export const useTaskStore = create<TaskStore>((set) => ({
     }
   },
 
-  updateTask: async (id, updates) => {
+  updateTask: async (taskId, updates) => {
     try {
       const token = getAuthToken();
-      const response = await fetch(`${API_URL}/tasks/${id}`, {
+      const response = await fetch(`${API_URL}/tasks/${taskId}`, {
         method: 'PUT',
         headers: { 
           'Content-Type': 'application/json',
@@ -82,7 +86,7 @@ export const useTaskStore = create<TaskStore>((set) => ({
       const { data: updatedTask } = await response.json();
       set((state) => ({
         tasks: state.tasks.map((task) =>
-          task.id === id ? { 
+          task.id === taskId ? { 
             ...task, 
             ...updatedTask,
             updatedAt: new Date(updatedTask.updatedAt),
@@ -93,6 +97,34 @@ export const useTaskStore = create<TaskStore>((set) => ({
       }));
     } catch (error) {
       console.error('Failed to update task:', error);
+    }
+  },
+
+  updateTaskStatus: async (taskId, statusId) => {
+    try {
+      const token = getAuthToken();
+      const response = await fetch(`${API_URL}/tasks/${taskId}/status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ statusId }),
+      });
+      const { data } = await response.json();
+      set((state) => ({
+        tasks: state.tasks.map((task) =>
+          task.id === taskId ? { 
+            ...task, 
+            ...data,
+            updatedAt: new Date(data.updatedAt),
+            createdAt: new Date(data.createdAt),
+            dueDate: data.dueDate ? new Date(data.dueDate) : undefined
+          } : task
+        ),
+      }));
+    } catch (error) {
+      console.error('Failed to update task status:', error);
     }
   },
 
