@@ -1,65 +1,162 @@
 import prisma from "../config/database";
+import { AppError } from "../utils/errorHandler";
+import { Task, Priority, Status } from "@prisma/client";
 
-// export const createTask = async (userId: string, data: any) => prisma.task.create({ data: { ...data, userId } });
-export const getTasksByUser = async (userId: string) => {
-  const tasks = await prisma.task.findMany({
-    where: { userId },
-    include: { priority: true, status: true },
+interface CreateTaskData {
+  title: string;
+  description?: string;
+  priorityId: string;
+  statusId: string;
+  dueDate?: Date;
+  tags?: string[];
+}
+
+const validateTaskData = async (data: CreateTaskData) => {
+  if (!data.title?.trim()) {
+    throw new AppError("Task title is required", 400);
+  }
+
+  // Validate priority exists
+  const priority = await prisma.priority.findUnique({
+    where: { id: data.priorityId },
   });
-  return tasks;
+  if (!priority) {
+    throw new AppError("Invalid priority", 400);
+  }
+
+  // Validate status exists
+  const status = await prisma.status.findUnique({
+    where: { id: data.statusId },
+  });
+  if (!status) {
+    throw new AppError("Invalid status", 400);
+  }
+
+  // Validate due date
+  if (data.dueDate && new Date(data.dueDate) < new Date()) {
+    throw new AppError("Due date cannot be in the past", 400);
+  }
 };
 
-export const createTask = async (userId: string, taskData: any) => {
+export const createTask = async (userId: string, taskData: CreateTaskData) => {
+  await validateTaskData(taskData);
+
   try {
     const result = await prisma.$transaction(async (prisma) => {
       // Create the task
       const task = await prisma.task.create({
         data: {
           title: taskData.title,
-          description: taskData.description,
+          description: taskData.description as string,
           priorityId: taskData.priorityId,
           statusId: taskData.statusId,
-          dueDate: taskData.dueDate,
-          tags: taskData.tags,
+          dueDate: taskData.dueDate as Date,
+          tags: taskData.tags || [],
           userId: userId,
+        },
+        include: {
+          priority: true,
+          status: true,
         },
       });
 
       // Create the activity for task creation
-      const activity = await prisma.activity.create({
+      await prisma.activity.create({
         data: {
-          description: taskData.description,
+          description: `Task "${task.title}" created`,
           userId: userId,
           taskId: task.id,
         },
       });
 
-      return { task, activity };
+      return task;
     });
 
     return result;
   } catch (error) {
-    console.error("Error creating task and logging activity:", error);
-    throw error;
+    console.error("Error creating task:", error);
+    throw new AppError("Failed to create task", 500);
+  }
+};
+
+export const getTasksByUser = async (userId: string) => {
+  try {
+    const tasks = await prisma.task.findMany({
+      where: { userId },
+      include: { 
+        priority: true, 
+        status: true,
+        activities: {
+          orderBy: {
+            timestamp: 'desc'
+          },
+          take: 5
+        }
+      },
+      orderBy: {
+        updatedAt: 'desc'
+      }
+    });
+    return tasks;
+  } catch (error) {
+    console.error("Error fetching tasks:", error);
+    throw new AppError("Failed to fetch tasks", 500);
   }
 };
 
 export const updateTaskStatus = async (userId: string, taskId: string, statusId: string) => {
   try {
+    // Verify task exists and belongs to user
+    const existingTask = await prisma.task.findFirst({
+      where: { 
+        id: taskId,
+        userId 
+      }
+    });
+
+    if (!existingTask) {
+      throw new AppError("Task not found or unauthorized", 404);
+    }
+
+    // Verify status exists
+    const status = await prisma.status.findUnique({
+      where: { id: statusId }
+    });
+
+    if (!status) {
+      throw new AppError("Invalid status", 400);
+    }
+
     const result = await prisma.$transaction(async (prisma) => {
       // Update the task's status
       const task = await prisma.task.update({
         where: { id: taskId },
-        include: { priority: true, status: true },
-        data: { statusId },
+        data: { 
+          statusId,
+          updatedAt: new Date()
+        },
+        include: { 
+          priority: true, 
+          status: true 
+        },
       });
 
-      return { task };
+      // Log the status change activity
+      await prisma.activity.create({
+        data: {
+          description: `Task status updated to "${status.name}"`,
+          userId,
+          taskId,
+        },
+      });
+
+      return task;
     });
 
     return result;
   } catch (error) {
+    if (error instanceof AppError) throw error;
     console.error("Error updating task status:", error);
-    throw error;
+    throw new AppError("Failed to update task status", 500);
   }
 };

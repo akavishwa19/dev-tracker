@@ -15,7 +15,6 @@ interface TaskModalProps {
 export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, task, priorities, statuses }) => {
   const addTask = useTaskStore((state) => state.addTask);
   const updateTask = useTaskStore((state) => state.updateTask);
-
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -32,16 +31,24 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, task, pri
         description: task.description,
         priorityId: task.priority.id,
         statusId: task.status.id,
-        dueDate: task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : '',
+        dueDate: task.dueDate?.toString() as string,
         tags: task.tags,
       });
     }
-  }, [task]);
+  }, [task, priorities, statuses]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate required fields
+    if (!formData.title?.trim()) {
+      return;
+    }
+
     const taskData = {
       ...formData,
+      priorityId: formData.priorityId || priorities[0].id,
+      statusId: formData.statusId || statuses[0].id,
       dueDate: formData.dueDate ? new Date(formData.dueDate) : undefined,
     };
 
@@ -50,7 +57,6 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, task, pri
     } else {
       addTask(taskData);
     }
-    console.log(taskData);
     onClose();
   };
 

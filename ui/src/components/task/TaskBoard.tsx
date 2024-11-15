@@ -48,10 +48,6 @@ export const TaskBoard = () => {
     fetchMetadata();
   }, [fetchTasks, fetchMetadata]);
 
-  console.log("Priorities:", priorities);
-  console.log("Statuses:", statuses);
-  console.log("Filtered Tasks:", filteredTasks);
-
   return (
     <>
       <div className="flex items-center justify-between mb-6">

@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { motion } from 'framer-motion';
 import { Clock, Tag } from 'lucide-react';
 import type { Task } from '../../types/task';
 
