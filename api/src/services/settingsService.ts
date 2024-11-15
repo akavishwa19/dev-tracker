@@ -23,8 +23,8 @@ export const updateNotificationSettings = async (userId: string, data: UpdateNot
   }
   const updatedSettings = {
     ...userSettings,
-    emailNotifications: data.emailNotifications,
-    taskReminders: data.taskReminders,
+    emailNotifications: data.body.emailNotifications,
+    taskReminders: data.body.taskReminders,
   };
   return prisma.settings.update({ where: { userId }, data: updatedSettings });
 };
@@ -36,7 +36,7 @@ export const updateThemeSettings = async (userId: string, data: UpdateThemeSetti
   }
   const updatedSettings = {
     ...userSettings,
-    theme: data.theme,
+    theme: data.body.theme,
   };
   return prisma.settings.update({ where: { userId }, data: updatedSettings });
 };

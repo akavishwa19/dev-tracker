@@ -8,7 +8,7 @@ export interface AuthenticatedRequest extends Request {
   email: string;
 }
 
-export const validateToken = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+export const validateToken = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -26,8 +26,8 @@ export const validateToken = (req: AuthenticatedRequest, res: Response, next: Ne
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as jwt.JwtPayload;
-    req.userId = decoded.userId;
-    req.email = decoded.email;
+    (req as AuthenticatedRequest).userId = decoded.userId;
+    (req as AuthenticatedRequest).email = decoded.email;
     next();
   } catch (error) {
     return res.status(401).json({ message: 'Unauthorized: Invalid token' });

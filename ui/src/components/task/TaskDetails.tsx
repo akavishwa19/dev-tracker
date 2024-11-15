@@ -82,11 +82,11 @@ export const TaskDetails: React.FC<TaskDetailsProps> = ({ task, onClose }) => {
               <h2 className="text-2xl font-bold">{task.title}</h2>
               <div className="flex items-center mt-2 space-x-4">
                 <span className={`px-2 py-1 rounded text-sm font-medium ${
-                  task.priority === 'high' ? 'bg-red-100 text-red-800' :
-                  task.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                  task.priority.name === 'High' ? 'bg-red-100 text-red-800' :
+                  task.priority.name === 'Medium' ? 'bg-yellow-100 text-yellow-800' :
                   'bg-blue-100 text-blue-800'
                 }`}>
-                  {task.priority}
+                  {task.priority.name}
                 </span>
                 <span className="text-sm text-gray-500">
                   Created {format(task.createdAt, 'MMM d, yyyy')}
@@ -160,7 +160,7 @@ export const TaskDetails: React.FC<TaskDetailsProps> = ({ task, onClose }) => {
                   </div>
                   <div className="flex items-center space-x-2">
                     <AlertCircle className="w-5 h-5 text-gray-400" />
-                    <span>Status: {task.status}</span>
+                    <span>Status: {task.status.name}</span>
                   </div>
                   {task.tags.length > 0 && (
                     <div className="flex items-center space-x-2">

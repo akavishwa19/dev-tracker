@@ -8,17 +8,19 @@ interface TaskModalProps {
   isOpen: boolean;
   onClose: () => void;
   task?: Task;
+  priorities: TaskPriority[];
+  statuses: TaskStatus[];
 }
 
-export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, task }) => {
+export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, task, priorities, statuses }) => {
   const addTask = useTaskStore((state) => state.addTask);
   const updateTask = useTaskStore((state) => state.updateTask);
 
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    priority: 'medium' as TaskPriority,
-    status: 'todo' as TaskStatus,
+    priorityId: '',
+    statusId: '',
     dueDate: '',
     tags: [] as string[],
   });
@@ -28,8 +30,8 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, task }) =
       setFormData({
         title: task.title,
         description: task.description,
-        priority: task.priority,
-        status: task.status,
+        priorityId: task.priority.id,
+        statusId: task.status.id,
         dueDate: task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : '',
         tags: task.tags,
       });
@@ -48,6 +50,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, task }) =
     } else {
       addTask(taskData);
     }
+    console.log(taskData);
     onClose();
   };
 
@@ -63,6 +66,16 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, task }) =
       }
       e.currentTarget.value = '';
     }
+  };
+
+  const handlePriorityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { id } = priorities.find(({ id }) => id === e.target.value) as TaskPriority;
+    setFormData((prev) => ({ ...prev, priorityId: id }));
+  };
+
+  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { id } = statuses.find(({ id }) => id === e.target.value) as TaskStatus;
+    setFormData((prev) => ({ ...prev, statusId: id }));
   };
 
   return (
@@ -123,28 +136,23 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, task }) =
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block mb-1 text-sm font-medium">Priority</label>
-                    <select
-                      value={formData.priority}
-                      onChange={e => setFormData(prev => ({ ...prev, priority: e.target.value as TaskPriority }))}
-                      className="w-full p-1 border-gray-300 rounded-md shadow-sm dark:text-gray-700 focus:border-indigo-500 focus:ring-indigo-500"
-                    >
-                      <option value="low">Low</option>
-                      <option value="medium">Medium</option>
-                      <option value="high">High</option>
+                    <select value={formData.priorityId} onChange={handlePriorityChange} className="w-full p-1 border-gray-300 rounded-md shadow-sm dark:text-gray-700 focus:border-indigo-500 focus:ring-indigo-500">
+                      {priorities.map(({ id, name }) => (
+                        <option key={id} value={id}>
+                          {name}
+                        </option>
+                      ))}
                     </select>
                   </div>
 
                   <div>
                     <label className="block mb-1 text-sm font-medium">Status</label>
-                    <select
-                      value={formData.status}
-                      onChange={e => setFormData(prev => ({ ...prev, status: e.target.value as TaskStatus }))}
-                      className="w-full p-1 border-gray-300 rounded-md shadow-sm dark:text-gray-700 focus:border-indigo-500 focus:ring-indigo-500"
-                    >
-                      <option value="todo">To Do</option>
-                      <option value="in-progress">In Progress</option>
-                      <option value="review">Review</option>
-                      <option value="done">Done</option>
+                    <select value={formData.statusId} onChange={handleStatusChange} className="w-full p-1 border-gray-300 rounded-md shadow-sm dark:text-gray-700 focus:border-indigo-500 focus:ring-indigo-500">
+                      {statuses.map(({ id, name }) => (
+                        <option key={id} value={id}>
+                          {name}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 </div>

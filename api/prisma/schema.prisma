@@ -63,6 +63,6 @@ model Activity {
   timestamp    DateTime @default(now())
   userId       String
   user         User     @relation(fields: [userId], references: [id])
-  todoId       String?
-  task         Task?    @relation(fields: [todoId], references: [id])
+  taskId       String?
+  task         Task?    @relation(fields: [taskId], references: [id])
 }

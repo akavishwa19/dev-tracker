@@ -1,32 +1,28 @@
-import { useState } from 'react';
+// components/TaskBoard.tsx
+import { useEffect, useState } from 'react';
 import { DragDropContext, DropResult } from '@hello-pangea/dnd';
 import { Plus } from 'lucide-react';
 import { useTaskStore } from '../../store/useTaskStore';
 import { TaskColumn } from './TaskColumn';
 import { TaskModal } from './TaskModal';
 import { TaskFilters } from './TaskFilters';
-import { Task, TaskStatus, TaskPriority } from '../../types/task';
-
-const columns: { id: TaskStatus; title: string }[] = [
-  { id: 'todo', title: 'To Do' },
-  { id: 'in-progress', title: 'In Progress' },
-  { id: 'review', title: 'Review' },
-  { id: 'done', title: 'Done' },
-];
+import { Task } from '../../types/task';
+import { useTaskMetadataStore } from '../../store/TaskMetadataStore';
 
 export const TaskBoard = () => {
-  const { tasks, moveTask } = useTaskStore();
+  const { tasks, moveTask, fetchTasks } = useTaskStore();
+  const { priorities, statuses, fetchMetadata } = useTaskMetadataStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | undefined>();
   const [search, setSearch] = useState('');
-  const [priority, setPriority] = useState<TaskPriority | 'all'>('all');
-  const [status, setStatus] = useState<TaskStatus | 'all'>('all');
+  const [priority, setPriority] = useState<string | 'All'>('All');
+  const [status, setStatus] = useState<string | 'All'>('All');
 
   const handleDragEnd = (result: DropResult) => {
     if (!result.destination) return;
 
-    const sourceId = result.source.droppableId as TaskStatus;
-    const destinationId = result.destination.droppableId as TaskStatus;
+    const sourceId = result.source.droppableId;
+    const destinationId = result.destination.droppableId;
     const taskId = result.draggableId;
 
     if (sourceId !== destinationId) {
@@ -37,8 +33,8 @@ export const TaskBoard = () => {
   const filteredTasks = tasks.filter((task) => {
     const matchesSearch = task.title.toLowerCase().includes(search.toLowerCase()) ||
       task.description.toLowerCase().includes(search.toLowerCase());
-    const matchesPriority = priority === 'all' || task.priority === priority;
-    const matchesStatus = status === 'all' || task.status === status;
+    const matchesPriority = priority === 'All' || task.priority.name === priority;
+    const matchesStatus = status === 'All' || task.status.name === status;
     return matchesSearch && matchesPriority && matchesStatus;
   });
 
@@ -46,6 +42,15 @@ export const TaskBoard = () => {
     setSelectedTask(task);
     setIsModalOpen(true);
   };
+
+  useEffect(() => {
+    fetchTasks();
+    fetchMetadata();
+  }, [fetchTasks, fetchMetadata]);
+
+  console.log("Priorities:", priorities);
+  console.log("Statuses:", statuses);
+  console.log("Filtered Tasks:", filteredTasks);
 
   return (
     <>
@@ -70,16 +75,18 @@ export const TaskBoard = () => {
         setPriority={setPriority}
         status={status}
         setStatus={setStatus}
+        priorities={priorities}
+        statuses={statuses}
       />
 
       <DragDropContext onDragEnd={handleDragEnd}>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {columns.map(({ id, title }) => (
+          {statuses.map(({ id, name }) => (
             <TaskColumn
               key={id}
               id={id}
-              title={title}
-              tasks={filteredTasks.filter((task) => task.status === id)}
+              title={name}
+              tasks={filteredTasks.filter((task) => task.status.id === id)}
               onTaskClick={handleTaskClick}
             />
           ))}
@@ -93,6 +100,8 @@ export const TaskBoard = () => {
           setSelectedTask(undefined);
         }}
         task={selectedTask}
+        priorities={priorities}
+        statuses={statuses}
       />
     </>
   );

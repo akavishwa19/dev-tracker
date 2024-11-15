@@ -1,4 +1,3 @@
-import React from 'react';
 import { Moon, Sun } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../../hooks/useTheme';
@@ -11,7 +10,7 @@ export const ThemeToggle = () => {
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       onClick={toggleTheme}
-      className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-100"
+      className="p-2 text-gray-800 bg-gray-100 rounded-full dark:bg-gray-800 dark:text-gray-100"
       aria-label="Toggle theme"
     >
       {theme === 'dark' ? (

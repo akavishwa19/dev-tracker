@@ -11,18 +11,13 @@ interface TaskCardProps {
 
 export const TaskCard: React.FC<TaskCardProps> = ({ task, onClick }) => {
   const priorityColors = {
-    low: 'bg-blue-100 text-blue-800',
-    medium: 'bg-yellow-100 text-yellow-800',
-    high: 'bg-red-100 text-red-800',
+    Low: 'bg-blue-100 text-blue-800',
+    Medium: 'bg-yellow-100 text-yellow-800',
+    High: 'bg-red-100 text-red-800',
   };
 
   return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      whileHover={{ scale: 1.02 }}
+    <div
       onClick={onClick}
       className="p-4 bg-white rounded-lg shadow-sm dark:shadow-zinc-400 dark:bg-gray-800"
     >
@@ -32,10 +27,10 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onClick }) => {
         </h3>
         <span
           className={`px-2 py-1 rounded text-xs font-medium ${
-            priorityColors[task.priority]
+            priorityColors[task.priority.name]
           }`}
         >
-          {task.priority}
+          {task.priority.name}
         </span>
       </div>
       
@@ -62,6 +57,6 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onClick }) => {
           </div>
         )}
       </div>
-    </motion.div>
+    </div>
   );
 };

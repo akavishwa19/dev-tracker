@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle2, Clock, AlertCircle } from 'lucide-react';
 import { useTaskStore } from '../../store/useTaskStore';
@@ -9,27 +8,27 @@ export const TaskStats = () => {
   const stats = [
     {
       label: 'Completed Tasks',
-      value: tasks.filter((t) => t.status === 'done').length,
+      value: tasks.filter((t) => t.status.name === 'Done').length,
       icon: CheckCircle2,
       color: 'text-green-500',
     },
     {
       label: 'In Progress',
-      value: tasks.filter((t) => t.status === 'in-progress').length,
+      value: tasks.filter((t) => t.status.name === 'In Progress').length,
       icon: Clock,
       color: 'text-blue-500',
     },
     {
       label: 'High Priority',
-      value: tasks.filter((t) => t.priority === 'high').length,
+      value: tasks.filter((t) => t.priority.name === 'High').length,
       icon: AlertCircle,
       color: 'text-red-500',
     },
   ];
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
-      <h2 className="text-xl font-semibold mb-6">Task Overview</h2>
+    <div className="p-6 bg-white rounded-lg shadow-sm dark:bg-gray-800">
+      <h2 className="mb-6 text-xl font-semibold">Task Overview</h2>
       <div className="space-y-6">
         {stats.map((stat, index) => (
           <motion.div

@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import { Request } from "express";
 
 export interface UpdateSettingsRequest extends Request {
   params: {
@@ -24,13 +24,15 @@ export interface UpdateProfileSettingRequest extends Request {
   };
 }
 
-export interface UpdateNotificationSettingRequest {
+export interface UpdateNotificationSettingRequest extends Request {
+  body: {
     emailNotifications: boolean;
     taskReminders: boolean;
+  };
 }
 
-export interface UpdateThemeSettingRequest {
-
-    theme: string
-
+export interface UpdateThemeSettingRequest extends Request {
+  body: {
+    theme: string;
+  };
 }

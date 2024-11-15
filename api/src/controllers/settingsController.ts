@@ -20,11 +20,11 @@ export const updateProfileController = catchAsync(async (req: AuthenticatedReque
 });
 
 export const UpdateNotificationSettings = catchAsync(async (req: AuthenticatedRequest, res: Response) => {
-  const updatedNotificationSettings = await settingsService.updateNotificationSettings(req.userId, req.body);
+  const updatedNotificationSettings = await settingsService.updateNotificationSettings(req.userId, req);
   sendSuccess(res, updatedNotificationSettings, 'Notification settings updated successfully');
 })
 
 export const UpdateThemeSettings = catchAsync(async (req: AuthenticatedRequest, res: Response) => {
-  const updatedThemeSettings = await settingsService.updateThemeSettings(req.userId, req.body);
+  const updatedThemeSettings = await settingsService.updateThemeSettings(req.userId, req);
   sendSuccess(res, updatedThemeSettings, 'Theme settings updated successfully')
 })

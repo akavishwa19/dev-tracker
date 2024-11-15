@@ -12,6 +12,14 @@ export const SettingsPage = React.memo(() => {
   const { theme, toggleTheme } = useTheme();
   const { user } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
+
+  // public isEditing : boolean = false;
+
+  // onEdit() {
+  //   this.isEditing = !this.isEditing;
+  // }
+
+
   const [profileForm, setProfileForm] = useState({ name: user?.name || '' });
   const [notificationSettings, setNotificationSettings] = useState<UserSettings | null>(null);
 
@@ -39,7 +47,10 @@ export const SettingsPage = React.memo(() => {
 
   const handleProfileSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isEditing) return setIsEditing(true);
+    if (!isEditing)
+      return setIsEditing(true);
+
+    // this.isEditing = true;
 
     try {
       const response = await fetch(`${API_URL}/settings/user/profile`, {
@@ -54,10 +65,12 @@ export const SettingsPage = React.memo(() => {
       if (response.ok) {
         toast.success("Display name updated");
         setIsEditing(false);
+        // this.isEditing = false;
       } else {
         toast.error("Failed to update profile");
       }
     } catch (error) {
+      toast.error("Failed to update profile");
       console.error('Error updating profile:', error);
     }
   }, [isEditing, profileForm, token]);

@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import { AuthenticatedRequest } from '../middlewares/authMiddleware';
 
 export interface CreateTaskRequest extends Request {
   body: {
@@ -15,5 +16,15 @@ export interface CreateTaskRequest extends Request {
 export interface GetTasksRequest extends Request {
   params: {
     userId: string;
+  };
+}
+
+
+export interface UpdateTaskStatusRequest extends AuthenticatedRequest {
+  params: {
+    taskId: string;
+  };
+  body: {
+    statusId: string;
   };
 }

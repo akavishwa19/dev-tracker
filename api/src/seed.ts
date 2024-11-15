@@ -1,8 +1,8 @@
 import prisma from './config/database';
 
 export async function seedData() {
-  const priorities = ['low', 'medium', 'high'];
-  const statuses = ['todo', 'in-progress', 'review', 'done'];
+  const priorities = ['Low', 'Medium', 'High'];
+  const statuses = ['Todo', 'In Progress', 'Review', 'Done'];
 
   // Check and Seed Priorities
   for (const priority of priorities) {

@@ -6,8 +6,8 @@ export const RecentActivity = () => {
   const tasks = useTaskStore((state) => state.tasks);
   
   const recentTasks = [...tasks]
-    .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
-    .slice(0, 3);
+  .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+  .slice(0, 3);
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-sm dark:bg-gray-800">
@@ -25,7 +25,7 @@ export const RecentActivity = () => {
             <div>
               <h3 className="font-medium">{task.title}</h3>
               <p className="text-sm text-gray-600 dark:text-gray-300">
-                Status: {task.status}
+                Status: {task.status.name}
               </p>
               <time className="text-xs text-gray-500">
                 {new Date(task.updatedAt).toLocaleString()}

@@ -6,6 +6,8 @@ import activityRoutes from './routes/activityRoutes';
 import settingsRoutes from './routes/settingsRoutes';
 import authRoutes from './routes/authRoutes';
 import { seedData } from './seed';
+import statusRoutes from '@routes/statusRoutes';
+import priorityRoutes from '@routes/priorityRoutes';
 
 dotenv.config();
 
@@ -28,6 +30,8 @@ app.use('/api/tasks', taskRoutes);
 app.use('/api/activities', activityRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/auth', authRoutes );
+app.use('/api/status', statusRoutes);
+app.use('/api/priority', priorityRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
