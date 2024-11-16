@@ -2,7 +2,13 @@
 
 DevTracker is a powerful, modern task management application designed specifically for developers and development teams. Built with the MERN stack (MongoDB, Express.js, React, Node.js), it offers a clean, intuitive interface for managing development tasks efficiently.
 
-![DevTracker Dashboard](screenshot.png)
+Landing page
+![image](https://github.com/user-attachments/assets/f1994a47-aa6c-41cf-8280-ac87e0fae6d4)
+
+Dashboard page
+![image](https://github.com/user-attachments/assets/ae00424b-fbc9-4ee8-98e6-46f3ea1edd4e)
+
+
 
 ## 🌟 Features
 
@@ -180,7 +186,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👥 Authors
 
-- Your Name (@yourusername)
+- Sashikumar Yadav (@yshashi)
 
 ## 🙏 Acknowledgments
 
