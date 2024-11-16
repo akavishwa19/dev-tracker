@@ -1,21 +1,22 @@
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ThemeToggle } from '../common/ThemeToggle';
-import { LayoutDashboard, CheckSquare, Settings } from 'lucide-react';
+import { LayoutDashboard, CheckSquare, Settings, Home } from 'lucide-react';
 
 export const Navbar = () => {
   const location = useLocation();
 
   const navItems = [
-    { path: '/', icon: LayoutDashboard, label: 'Dashboard' },
-    { path: '/tasks', icon: CheckSquare, label: 'Tasks' },
+    { path: '/', icon: Home, label: 'Home' },
+    { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+
     { path: '/settings', icon: Settings, label: 'Settings' },
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 dark:bg-gray-900 dark:border-gray-800">
+    <nav className="fixed top-0 right-0 left-0 z-50 bg-white border-b border-gray-200 dark:bg-gray-900 dark:border-gray-800">
       <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <Link to="/" className="flex items-center space-x-2">
               <CheckSquare className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
@@ -25,7 +26,7 @@ export const Navbar = () => {
             </Link>
           </div>
 
-          <div className="items-center hidden space-x-4 md:flex">
+          <div className="hidden items-center space-x-4 md:flex">
             {navItems.map(({ path, icon: Icon, label }) => (
               <Link
                 key={path}

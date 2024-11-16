@@ -6,7 +6,6 @@ import { LoginPage } from './pages/auth/LoginPage';
 import { SignupPage } from './pages/auth/SignupPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { SettingsPage } from './pages/SettingsPage';
-import { TasksPage } from './pages/TasksPage';
 import { useAuthCheck } from './hooks/useAuthCheck';
 
 function App() {
@@ -39,19 +38,6 @@ function App() {
                   <Navbar />
                   <main className="pt-16">
                     <SettingsPage />
-                  </main>
-                </>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/tasks"
-            element={
-              <ProtectedRoute>
-                <>
-                  <Navbar />
-                  <main className="pt-16">
-                    <TasksPage />
                   </main>
                 </>
               </ProtectedRoute>
