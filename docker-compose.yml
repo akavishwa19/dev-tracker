@@ -23,7 +23,7 @@ services:
     environment:
       - VITE_API_URL=https://devtracker.letsprogram.in/api
     ports:
-      - "80:80"
+      - "5555:80"
     depends_on:
       - api
     networks:
