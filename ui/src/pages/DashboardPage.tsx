@@ -5,12 +5,20 @@ import { TaskStats } from '../components/dashboard/TaskStats';
 import { RecentActivity } from '../components/dashboard/RecentActivity';
 import { LayoutGrid, ListTodo, Search } from 'lucide-react';
 import { useState } from 'react';
+import { useTaskStore } from '@/store/useTaskStore';
 
 export const DashboardPage = () => {
   const [view, setView] = useState<'board' | 'list'>('board');
+  const [search, setSearch] = useState('');
+  const tasks = useTaskStore((state) => state.tasks);
+
+  const filteredTasks = tasks.filter((task) =>
+    task.title.toLowerCase().includes(search.toLowerCase()) ||
+    task.description.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
-    <div className="min-h-screen px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
+    <div className="px-4 py-8 mx-auto max-w-7xl min-h-screen sm:px-6 lg:px-8">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -22,15 +30,17 @@ export const DashboardPage = () => {
             Here's what's happening with your tasks today.
           </p>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex gap-4 items-center">
           <div className="relative flex-1 md:w-64">
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
               <Search className="w-4 h-4 text-gray-400" />
             </div>
             <input
               type="text"
               placeholder="Search tasks..."
-              className="w-full py-2 pl-10 pr-4 text-sm border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:text-white"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="py-2 pr-4 pl-10 w-full text-sm rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:text-white"
             />
           </div>
           <div className="flex items-center p-1 bg-gray-100 rounded-lg dark:bg-gray-700">
@@ -86,7 +96,7 @@ export const DashboardPage = () => {
           className="overflow-hidden bg-white rounded-xl shadow-sm dark:bg-gray-800"
         >
           <div className="p-6">
-            {view === 'board' ? <TaskBoard /> : <TaskList />}
+            {view === 'board' ? <TaskBoard filteredTasks={filteredTasks} /> : <TaskList filteredTasks={filteredTasks} />}
           </div>
         </motion.div>
       </div>

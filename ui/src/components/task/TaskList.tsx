@@ -40,8 +40,8 @@ const getStatusColor = (status: 'Todo' | 'In Progress' | 'Done' | 'Review') => {
   }
 };
 
-export const TaskList = () => {
-  const { tasks, deleteTask } = useTaskStore();
+export const TaskList = ({ filteredTasks }: { filteredTasks: Task[] }) => {
+  const { deleteTask } = useTaskStore();
   const [selectedTask, setSelectedTask] = useState<Task | undefined>();
   const [isViewOpen, setIsViewOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -84,7 +84,7 @@ export const TaskList = () => {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-          {tasks.map((task) => (
+          {filteredTasks.map((task) => (
             <motion.tr
               key={task.id}
               initial={{ opacity: 0, y: 20 }}
@@ -121,7 +121,7 @@ export const TaskList = () => {
                 <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
                   {task.dueDate ? (
                     <>
-                      <Clock className="w-4 h-4 mr-1" />
+                      <Clock className="mr-1 w-4 h-4" />
                       {new Date(task.dueDate).toLocaleDateString()}
                     </>
                   ) : (
@@ -130,7 +130,7 @@ export const TaskList = () => {
                 </div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
-                <div className="flex items-center gap-2">
+                <div className="flex gap-2 items-center">
                   <button
                     onClick={() => {
                       setSelectedTask(task);
@@ -197,7 +197,7 @@ export const TaskList = () => {
           </AlertDialogHeader>
           <AlertDialogFooter className="mt-6 space-x-2">
             <AlertDialogCancel
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border rounded-md dark:text-gray-300 dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md border dark:text-gray-300 dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
               disabled={isDeleting}
             >
               Cancel
@@ -209,7 +209,7 @@ export const TaskList = () => {
             >
               {isDeleting ? (
                 <div className="flex items-center">
-                  <svg className="w-4 h-4 mr-2 animate-spin" viewBox="0 0 24 24">
+                  <svg className="mr-2 w-4 h-4 animate-spin" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                   </svg>

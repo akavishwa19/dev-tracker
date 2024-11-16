@@ -9,7 +9,7 @@ import { UserSettings } from '../types/userSettings';
 import React from 'react';
 
 const MotionButton = motion.button;
-const MotionInput = motion(motion.input);
+const MotionInput = motion.create(motion.input);
 
 export const SettingsPage = React.memo(() => {
   const { theme, toggleTheme } = useTheme();
@@ -120,12 +120,12 @@ export const SettingsPage = React.memo(() => {
       description: 'Customize your app appearance',
       content: (
         <div className="space-y-4">
-          <div className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-gray-700">
+          <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg dark:bg-gray-700">
             <div className="space-y-1">
               <span className="font-medium">Dark Mode</span>
               <p className="text-sm text-gray-500 dark:text-gray-400">Switch between light and dark themes</p>
             </div>
-            <label className="relative inline-flex items-center cursor-pointer">
+            <label className="inline-flex relative items-center cursor-pointer">
               <input
                 type="checkbox"
                 checked={theme === 'dark'}
@@ -140,18 +140,18 @@ export const SettingsPage = React.memo(() => {
                           after:border after:rounded-full after:h-5 after:w-5 after:transition-all 
                           dark:border-gray-600 peer-checked:bg-indigo-600">
                 <motion.span
-                  className="absolute inset-0 flex items-center justify-center"
+                  className="flex absolute inset-0 justify-center items-center"
                   initial={false}
                   animate={{ opacity: theme === 'dark' ? 1 : 0 }}
                 >
-                  {/* <Moon className="w-3 h-3 ml-6 text-white" /> */}
+                  {/* <Moon className="ml-6 w-3 h-3 text-white" /> */}
                 </motion.span>
                 <motion.span
-                  className="absolute inset-0 flex items-center justify-center"
+                  className="flex absolute inset-0 justify-center items-center"
                   initial={false}
                   animate={{ opacity: theme === 'dark' ? 0 : 1 }}
                 >
-                  {/* <Sun className="w-3 h-3 ml-1 text-gray-500" /> */}
+                  {/* <Sun className="ml-1 w-3 h-3 text-gray-500" /> */}
                 </motion.span>
               </div>
             </label>
@@ -165,13 +165,13 @@ export const SettingsPage = React.memo(() => {
       description: 'Manage your notification preferences',
       content: (
         <div className="space-y-4">
-          <div className="p-3 space-y-4 rounded-lg bg-gray-50 dark:bg-gray-700">
-            <div className="flex items-center justify-between">
+          <div className="p-3 space-y-4 bg-gray-50 rounded-lg dark:bg-gray-700">
+            <div className="flex justify-between items-center">
               <div className="space-y-1">
                 <span className="font-medium">Email Notifications</span>
                 <p className="text-sm text-gray-500 dark:text-gray-400">Receive updates via email</p>
               </div>
-              <label className="relative inline-flex items-center cursor-pointer">
+              <label className="inline-flex relative items-center cursor-pointer">
                 <input
                   type="checkbox"
                   checked={notificationSettings?.emailNotifications || false}
@@ -187,12 +187,12 @@ export const SettingsPage = React.memo(() => {
                             dark:border-gray-600 peer-checked:bg-indigo-600"></div>
               </label>
             </div>
-            <div className="flex items-center justify-between">
+            <div className="flex justify-between items-center">
               <div className="space-y-1">
                 <span className="font-medium">Task Reminders</span>
                 <p className="text-sm text-gray-500 dark:text-gray-400">Get notified about upcoming tasks</p>
               </div>
-              <label className="relative inline-flex items-center cursor-pointer">
+              <label className="inline-flex relative items-center cursor-pointer">
                 <input
                   type="checkbox"
                   checked={notificationSettings?.taskReminders || false}
@@ -218,7 +218,7 @@ export const SettingsPage = React.memo(() => {
       description: 'Manage your personal information',
       content: (
         <form onSubmit={handleProfileSubmit} className="space-y-4">
-          <div className="p-3 space-y-4 rounded-lg bg-gray-50 dark:bg-gray-700">
+          <div className="p-3 space-y-4 bg-gray-50 rounded-lg dark:bg-gray-700">
             <div>
               <label className="block mb-1 text-sm font-medium">Display Name</label>
               <MotionInput
@@ -240,7 +240,7 @@ export const SettingsPage = React.memo(() => {
                 type="email"
                 value={user?.email}
                 disabled
-                className="w-full p-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm dark:bg-gray-600 dark:border-gray-500 dark:text-gray-400"
+                className="p-2 w-full bg-gray-100 rounded-lg border border-gray-300 shadow-sm dark:bg-gray-600 dark:border-gray-500 dark:text-gray-400"
               />
             </div>
           </div>
@@ -248,7 +248,7 @@ export const SettingsPage = React.memo(() => {
             {isEditing && (
               <MotionButton
                 type="submit"
-                className="w-full py-2 text-white transition-colors bg-indigo-600 rounded-lg hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                className="py-2 w-full text-white bg-indigo-600 rounded-lg transition-colors hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
@@ -268,8 +268,8 @@ export const SettingsPage = React.memo(() => {
       description: 'Manage your account security',
       content: (
         <div className="space-y-4">
-          <div className="p-3 rounded-lg bg-gray-50 dark:bg-gray-700">
-            <div className="flex items-center justify-between">
+          <div className="p-3 bg-gray-50 rounded-lg dark:bg-gray-700">
+            <div className="flex justify-between items-center">
               <div className="space-y-1">
                 <span className="font-medium">Change Password</span>
                 <p className="text-sm text-gray-500 dark:text-gray-400">Update your account password</p>
@@ -294,7 +294,7 @@ export const SettingsPage = React.memo(() => {
   ]);
 
   return (
-    <div className="max-w-3xl px-4 py-8 mx-auto">
+    <div className="px-4 py-8 mx-auto max-w-3xl">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -314,12 +314,12 @@ export const SettingsPage = React.memo(() => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
-            className="overflow-hidden transition-shadow bg-white shadow-sm rounded-xl dark:bg-gray-800 hover:shadow-md"
+            className="overflow-hidden bg-white rounded-xl shadow-sm transition-shadow dark:bg-gray-800 hover:shadow-md"
             onHoverStart={() => setActiveSection(section.title)}
             onHoverEnd={() => setActiveSection(null)}
           >
             <div className="p-6">
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex justify-between items-center mb-4">
                 <div className="flex items-center space-x-3">
                   <motion.div
                     animate={{
