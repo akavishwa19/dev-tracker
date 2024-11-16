@@ -22,6 +22,10 @@ services:
     image: syadav49/devtracker-ui:latest
     container_name: devtracker-ui
     restart: unless-stopped
+    build:
+      context: ./ui
+      args:
+        - VITE_API_URL=https://devtracker-api.letsprogram.in/api
     environment:
       - VITE_API_URL=https://devtracker-api.letsprogram.in/api
     ports:
@@ -33,5 +37,4 @@ services:
 
 networks:
   devtracker-network:
-    driver: bridge
     name: devtracker-network

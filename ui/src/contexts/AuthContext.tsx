@@ -23,7 +23,7 @@ export const useAuth = () => {
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true); // Start with loading as true to load user on mount
-  const apiUrl = 'https://devtracker-api.letsprogram.in/api';
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   const loadUser = useCallback(async () => {
     const token = localStorage.getItem('authToken');
