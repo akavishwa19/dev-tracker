@@ -48,11 +48,11 @@ export const createTask = async (userId: string, taskData: CreateTaskData) => {
         data: {
           title: taskData.title,
           description: taskData.description as string,
-          priorityId: taskData.priorityId,
-          statusId: taskData.statusId,
+          priorityId: taskData.priorityId as string,
+          statusId: taskData.statusId as string,
           dueDate: taskData.dueDate as Date,
           tags: taskData.tags || [],
-          userId: userId,
+          userId: userId as string,
         },
         include: {
           priority: true,
@@ -199,11 +199,11 @@ export const updateTask = async (userId: string, taskId: string, updates: Partia
     data: {
       title: updates.title as string,
       description: updates.description as string,
-      priorityId: updates.priorityId,
-      statusId: updates.statusId,
+      priorityId: updates.priorityId as string,
+      statusId: updates.statusId as string,
       dueDate: updates.dueDate as Date,
       tags: updates.tags || [],
-      userId: userId,
+      userId: userId as string,
     },
     include: {
       priority: true,

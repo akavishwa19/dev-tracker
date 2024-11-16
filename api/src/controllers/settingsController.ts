@@ -15,16 +15,25 @@ export const updateSettingsController = catchAsync(async (req: Request, res: Res
 });
 
 export const updateProfileController = catchAsync(async (req: AuthenticatedRequest, res: Response) => {
+  if(!req.userId) {
+    return sendError(res, 'Unauthorized', 401);
+  }
   const updatedProfile = await settingsService.updateProfile(req.userId, req.body);
   sendSuccess(res, updatedProfile, 'Profile updated successfully');
 });
 
 export const UpdateNotificationSettings = catchAsync(async (req: AuthenticatedRequest, res: Response) => {
+  if(!req.userId) {
+    return sendError(res, 'Unauthorized', 401);
+  }
   const updatedNotificationSettings = await settingsService.updateNotificationSettings(req.userId, req);
   sendSuccess(res, updatedNotificationSettings, 'Notification settings updated successfully');
 })
 
 export const UpdateThemeSettings = catchAsync(async (req: AuthenticatedRequest, res: Response) => {
+  if(!req.userId) {
+    return sendError(res, 'Unauthorized', 401);
+  }
   const updatedThemeSettings = await settingsService.updateThemeSettings(req.userId, req);
   sendSuccess(res, updatedThemeSettings, 'Theme settings updated successfully')
 })

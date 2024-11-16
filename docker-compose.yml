@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  # Backend API
+  api:
+    image: syadav49/devtracker-api:latest
+    container_name: devtracker-api
+    restart: unless-stopped
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION=${JWT_EXPIRATION}
+      - PORT=5510
+      - FRONTEND_URL=https://devtracker.letsprogram.in
+    networks:
+      - devtracker-network
+
+  # Frontend UI
+  ui:
+    image: syadav49/devtracker-ui:latest
+    container_name: devtracker-ui
+    restart: unless-stopped
+    environment:
+      - VITE_API_URL=https://devtracker.letsprogram.in/api
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+    networks:
+      - devtracker-network
+
+networks:
+  devtracker-network:
+    driver: bridge
+    name: devtracker-network
