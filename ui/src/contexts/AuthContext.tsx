@@ -1,5 +1,6 @@
 import React, { createContext, useCallback, useContext, useState } from 'react';
 import { User } from '../types/user';
+import { API_URL, getApiUrl } from '@/utils/config';
 
 interface AuthContextType {
   user: User | null;
@@ -23,7 +24,10 @@ export const useAuth = () => {
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true); // Start with loading as true to load user on mount
-  const apiUrl = import.meta.env.VITE_API_URL;
+  
+  // Use the centralized API URL configuration
+  
+  console.log('Current API URL:', API_URL); // Debug log
 
   const loadUser = useCallback(async () => {
     const token = localStorage.getItem('authToken');
@@ -33,7 +37,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     try {
-      const response = await fetch(`${apiUrl}/auth/validate`, {
+      const response = await fetch(getApiUrl('/auth/validate'), {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
@@ -51,13 +55,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } finally {
       setLoading(false);
     }
-  }, [apiUrl]);
+  }, [getApiUrl]);
 
   const signIn = async (email: string, password: string) => {
     setLoading(true);
 
     try {
-      const response = await fetch(`${apiUrl}/auth/login`, {
+      const response = await fetch(getApiUrl('/auth/login'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -87,7 +91,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signUp = async (email: string, password: string, name?: string) => {
     setLoading(true);
     try {
-      const response = await fetch(`${apiUrl}/auth/signup`, {
+      const response = await fetch(getApiUrl('/auth/signup'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

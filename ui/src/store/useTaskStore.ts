@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { Task } from '../types/task';
-import { API_URL } from '../constants/app.constants';
+import { getApiUrl } from '../utils/config';
 import { getAuthToken } from '../utils/auth';
 
 interface TaskStore {
@@ -22,7 +22,7 @@ export const useTaskStore = create<TaskStore>((set) => ({
   fetchTasks: async () => {
     try {
       const token = getAuthToken();
-      const response = await fetch(`${API_URL}/tasks`, {
+      const response = await fetch(getApiUrl('/tasks'), {
         headers: { 
           'Content-Type': 'application/json', 
           Authorization: `Bearer ${token}` 
@@ -48,7 +48,7 @@ export const useTaskStore = create<TaskStore>((set) => ({
   addTask: async (task) => {
     try {
       const token = getAuthToken();
-      const response = await fetch(`${API_URL}/tasks`, {
+      const response = await fetch(getApiUrl('/tasks'), {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json', 
@@ -75,7 +75,7 @@ export const useTaskStore = create<TaskStore>((set) => ({
   updateTask: async (taskId, updates) => {
     try {
       const token = getAuthToken();
-      const response = await fetch(`${API_URL}/tasks/${taskId}`, {
+      const response = await fetch(getApiUrl(`/tasks/${taskId}`), {
         method: 'PUT',
         headers: { 
           'Content-Type': 'application/json',
@@ -103,7 +103,7 @@ export const useTaskStore = create<TaskStore>((set) => ({
   updateTaskStatus: async (taskId, statusId) => {
     try {
       const token = getAuthToken();
-      const response = await fetch(`${API_URL}/tasks/${taskId}/status`, {
+      const response = await fetch(getApiUrl(`/tasks/${taskId}/status`), {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -145,7 +145,7 @@ export const useTaskStore = create<TaskStore>((set) => ({
     try {
       const token = getAuthToken();
       // Make the API call to update the task's status on the server
-      const response = await fetch(`${API_URL}/tasks/${taskId}/status`, {
+      const response = await fetch(getApiUrl(`/tasks/${taskId}/status`), {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -180,7 +180,7 @@ export const useTaskStore = create<TaskStore>((set) => ({
   deleteTask: async (id) => {
     try {
       const token = getAuthToken();
-      const response = await fetch(`${API_URL}/tasks/${id}`, { 
+      const response = await fetch(getApiUrl(`/tasks/${id}`), { 
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
