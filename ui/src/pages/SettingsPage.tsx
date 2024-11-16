@@ -4,7 +4,7 @@ import { useTheme } from '../hooks/useTheme';
 import { useAuth } from '../contexts/AuthContext';
 import { useCallback, useEffect, useState, useMemo } from 'react';
 import { API_URL } from '../constants/app.constants';
-import { toast } from 'react-toastify';
+import toast from 'react-hot-toast';
 import { UserSettings } from '../types/userSettings';
 import React from 'react';
 
@@ -23,7 +23,7 @@ export const SettingsPage = React.memo(() => {
 
   const fetchUserSettings = useCallback(async () => {
     try {
-      const response = await fetch(`${API_URL}/settings/`, {
+      const response = await fetch(`${API_URL}/settings`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -86,14 +86,14 @@ export const SettingsPage = React.memo(() => {
       });
 
       if (!response.ok) {
-        toast.error(`${messageType} notification setting update failed`);
+        toast.error(`${messageType} setting update failed`);
         return false;
       }
 
-      toast.success(`${messageType} notification setting updated successfully`);
+      toast.success(`${messageType} setting updated successfully`);
       return true;
     } catch (error) {
-      toast.error(`${messageType} notification setting update failed`);
+      toast.error(`${messageType} setting update failed`);
       console.error('Error updating notifications:', error);
       return false;
     }
