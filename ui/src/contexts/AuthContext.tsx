@@ -30,7 +30,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   console.log('Current API URL:', API_URL); // Debug log
 
   const loadUser = useCallback(async () => {
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem('lp_dt_authToken');
     if (!token) {
       setLoading(false);
       return;
@@ -76,7 +76,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       const authResponse = await response.json();
       setUser(authResponse.data.user);
-      localStorage.setItem('authToken', authResponse.data.token); // Store only the token
+      localStorage.setItem('lp_dt_authToken', authResponse.data.token); // Store only the token
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw error;

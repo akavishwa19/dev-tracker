@@ -1,1 +1,1 @@
-export const getAuthToken = () => localStorage.getItem('authToken');
+export const getAuthToken = () => localStorage.getItem('lp_dt_authToken');

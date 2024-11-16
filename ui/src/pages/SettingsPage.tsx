@@ -19,7 +19,7 @@ export const SettingsPage = React.memo(() => {
   const [profileForm, setProfileForm] = useState({ name: user?.name || '' });
   const [notificationSettings, setNotificationSettings] = useState<UserSettings | null>(null);
 
-  const token = localStorage.getItem('authToken');
+  const token = localStorage.getItem('lp_dt_authToken');
 
   const fetchUserSettings = useCallback(async () => {
     try {

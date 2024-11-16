@@ -4,7 +4,7 @@ type Theme = 'light' | 'dark';
 
 export const useTheme = () => {
   const [theme, setTheme] = useState<Theme>(() => {
-    const savedTheme = localStorage.getItem('theme');
+    const savedTheme = localStorage.getItem('lp_dt_theme');
     return (savedTheme as Theme) || 
       (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
   });
@@ -13,7 +13,7 @@ export const useTheme = () => {
     const root = window.document.documentElement;
     root.classList.remove('light', 'dark');
     root.classList.add(theme);
-    localStorage.setItem('theme', theme);
+    localStorage.setItem('lp_dt_theme', theme);
   }, [theme]);
 
   const toggleTheme = () => {
