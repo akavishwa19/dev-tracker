@@ -23,7 +23,7 @@ services:
     container_name: devtracker-ui
     restart: unless-stopped
     environment:
-      - VITE_API_URL=https://devtracker.letsprogram.in/api
+      - VITE_API_URL=https://devtracker-api.letsprogram.in/api
     ports:
       - "5555:80"
     depends_on:
