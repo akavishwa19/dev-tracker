@@ -6,11 +6,13 @@ import { RecentActivity } from '../components/dashboard/RecentActivity';
 import { LayoutGrid, ListTodo, Search } from 'lucide-react';
 import { useState } from 'react';
 import { useTaskStore } from '@/store/useTaskStore';
+import { useAuth } from '@/contexts/AuthContext';
 
 export const DashboardPage = () => {
   const [view, setView] = useState<'board' | 'list'>('board');
   const [search, setSearch] = useState('');
   const tasks = useTaskStore((state) => state.tasks);
+  const { user } = useAuth();
 
   const filteredTasks = tasks.filter((task) =>
     task.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -25,7 +27,7 @@ export const DashboardPage = () => {
         className="flex flex-col gap-4 mb-8 md:flex-row md:items-center md:justify-between"
       >
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Welcome back!</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Welcome back {user?.name}!</h1>
           <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
             Here's what's happening with your tasks today.
           </p>

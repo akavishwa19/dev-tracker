@@ -34,7 +34,7 @@ export const LandingPage = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="max-w-3xl mx-auto"
+            className="mx-auto max-w-3xl"
           >
             <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl dark:text-white">
               Developer Task Management,{' '}
@@ -46,21 +46,21 @@ export const LandingPage = () => {
               Track your development tasks, manage projects, and collaborate with
               your team - all in one place. Built by developers, for developers.
             </p>
-            <div className="flex flex-col items-center justify-center gap-4 mt-10 sm:flex-row">
+            <div className="flex flex-col gap-4 justify-center items-center mt-10 sm:flex-row">
               <Link
                 to="/dashboard"
-                className="inline-flex items-center px-6 py-3 text-base font-medium text-white transition-all bg-indigo-600 rounded-lg shadow-lg hover:bg-indigo-500 hover:shadow-xl group"
+                className="inline-flex items-center px-6 py-3 text-base font-medium text-white bg-indigo-600 rounded-lg shadow-lg transition-all hover:bg-indigo-500 hover:shadow-xl group"
               >
                 Get Started
-                <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
+                <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
               </Link>
               <a
-                href="https://github.com"
+                href="https://github.com/yshashi/dev-tracker"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center px-6 py-3 text-base font-medium text-gray-700 transition-all bg-white rounded-lg shadow-lg dark:bg-gray-800 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:shadow-xl"
+                className="inline-flex items-center px-6 py-3 text-base font-medium text-gray-700 bg-white rounded-lg shadow-lg transition-all dark:bg-gray-800 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:shadow-xl"
               >
-                <Github className="w-4 h-4 mr-2" />
+                <Github className="mr-2 w-4 h-4" />
                 View on GitHub
               </a>
             </div>
@@ -76,10 +76,10 @@ export const LandingPage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="relative p-8 transition-all bg-white shadow-lg dark:bg-gray-800 rounded-2xl hover:shadow-xl"
+                className="relative p-8 bg-white rounded-2xl shadow-lg transition-all dark:bg-gray-800 hover:shadow-xl"
               >
                 <div className="absolute top-0 left-8 -translate-y-1/2">
-                  <div className="inline-flex items-center justify-center w-12 h-12 text-white bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl shadow-lg">
+                  <div className="inline-flex justify-center items-center w-12 h-12 text-white bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl shadow-lg">
                     <feature.icon className="w-6 h-6" />
                   </div>
                 </div>
