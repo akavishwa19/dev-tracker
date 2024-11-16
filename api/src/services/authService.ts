@@ -47,3 +47,34 @@ export const validateUser = async (userId: string) => {
     userId
   };
 };
+
+
+export const matchCurrentPassword = async (data: {
+  userId: string;
+  currentPassword: string;
+}) => {
+  //find authenticated user
+  const user = await prisma.user.findUnique({
+    where: {
+      id: data.userId,
+    },
+  });
+
+  return user && (await bcrypt.compare(data.currentPassword, user.password));
+};
+
+export const resetPasswordUser = async (data: {
+  userId: string;
+  updatedPassword: string;
+}) => {
+  const hashedPassword = await bcrypt.hash(data.updatedPassword, 10);
+
+  //update user password with the new password
+  const updatePassword = await prisma.user.update({
+    where: { id: data.userId },
+    data: {
+      password: hashedPassword,
+    },
+  });
+  return updatePassword;
+};
