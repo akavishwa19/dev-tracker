@@ -9,10 +9,13 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 interface Task {
   id: string;
   title: string;
-  description?: string;
-  status: { name: 'Todo' | 'In Progress' | 'Done' };
+  description: string;
+  status: { name: 'Todo' | 'In Progress' | 'Review' | 'Done' };
   priority: { name: 'Low' | 'Medium' | 'High' };
-  dueDate?: string;
+  dueDate?: Date;
+  tags: string[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const getPriorityColor = (priority: Task['priority']['name']) => {
@@ -26,7 +29,7 @@ const getPriorityColor = (priority: Task['priority']['name']) => {
   }
 };
 
-const getStatusColor = (status: Task['status']['name']) => {
+const getStatusColor = (status: 'Todo' | 'In Progress' | 'Done' | 'Review') => {
   switch (status) {
     case 'Todo':
       return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200';

@@ -7,11 +7,18 @@ import { UpdateTaskStatusRequest } from '../types/taskTypes';
 
 export const createTask = catchAsync(async (req: AuthenticatedRequest, res: Response) => {
   const { userId } = req;
-  const task = await taskService.createTask(req.userId, req.body);
+  if (!userId) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+  const task = await taskService.createTask(userId, req.body);
   sendSuccess(res, task, 'Task created successfully');
 });
 
 export const getTasks = catchAsync(async (req: AuthenticatedRequest, res: Response) => {
+  if (!req.userId) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+
   const tasks = await taskService.getTasksByUser(req.userId);
   sendSuccess(res, tasks, 'Tasks retrieved successfully');
 });
@@ -35,12 +42,29 @@ export const updateTaskStatus = catchAsync(async (req: UpdateTaskStatusRequest, 
 
 export const updateTask = catchAsync(async (req: AuthenticatedRequest, res: Response) => {
   const { taskId } = req.params;
+  if (!req.userId) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+
+  if (!taskId) {
+    return res.status(400).json({ message: 'Task ID is required' });
+  }
+
   const updatedTask = await taskService.updateTask(req.userId, taskId, req.body);
   sendSuccess(res, updatedTask, 'Task updated successfully');
 });
 
 export const deleteTask = catchAsync(async (req: AuthenticatedRequest, res: Response) => {
   const { taskId } = req.params;
+  
+  if (!req.userId) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+
+  if (!taskId) {
+    return res.status(400).json({ message: 'Task ID is required' });
+  }
+
   const result = await taskService.deleteTask(req.userId, taskId);
   sendSuccess(res, result, 'Task deleted successfully');
 });

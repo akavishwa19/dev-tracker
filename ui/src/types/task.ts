@@ -1,12 +1,12 @@
 export type Priority = 'Low' | 'Medium' | 'High';
 export type Status = 'Todo' | 'In Progress' | 'Review' | 'Done';
 export type TaskStatus = {
-  id: string;
+  id?: string;
   name: Status;
 }
 
 export type TaskPriority = {
-  id: string;
+  id?: string;
   name: Priority;
 }
 
