@@ -12,6 +12,8 @@ services:
       - JWT_EXPIRATION=${JWT_EXPIRATION}
       - PORT=5510
       - FRONTEND_URL=https://devtracker.letsprogram.in
+    ports:
+      - "5510:5510"
     networks:
       - devtracker-network
 
