@@ -19,8 +19,7 @@ export const ViewTaskDialog: React.FC<ViewTaskDialogProps> = ({
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
         <Dialog.Overlay 
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm
-            animate-in fade-in duration-200" 
+          className="fixed inset-0 backdrop-blur-sm duration-200 bg-black/40 animate-in fade-in" 
         />
         <Dialog.Content 
           className="fixed left-[50%] top-[50%] z-50 w-full max-w-lg translate-x-[-50%] translate-y-[-50%] 
@@ -28,7 +27,7 @@ export const ViewTaskDialog: React.FC<ViewTaskDialogProps> = ({
             animate-in fade-in-0 zoom-in-95 slide-in-from-bottom duration-200"
         >
           {/* Header */}
-          <div className="flex items-start justify-between mb-4">
+          <div className="flex justify-between items-start mb-4">
             <Dialog.Title className="text-xl font-semibold text-gray-900 dark:text-white">
               {task.title}
             </Dialog.Title>
@@ -40,12 +39,13 @@ export const ViewTaskDialog: React.FC<ViewTaskDialogProps> = ({
           {/* Content */}
           <div className="space-y-4">
             {/* Status and Priority */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
+            <div className="flex justify-between items-center">
+              <div className="flex gap-2 items-center">
                 <span className={cn(
                   "px-2.5 py-0.5 rounded-full text-sm font-medium",
                   task.status.name === "Todo" && "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200",
                   task.status.name === "In Progress" && "bg-blue-100 text-blue-700 dark:bg-blue-700 dark:text-blue-200",
+                  task.status.name === "Review" && "bg-teal-100 text-teal-700 dark:bg-teal-700 dark:text-teal-200",
                   task.status.name === "Done" && "bg-green-100 text-green-700 dark:bg-green-700 dark:text-green-200"
                 )}>
                   {task.status.name}
@@ -73,7 +73,7 @@ export const ViewTaskDialog: React.FC<ViewTaskDialogProps> = ({
 
             {/* Due Date */}
             {task.dueDate && (
-              <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+              <div className="flex gap-2 items-center text-gray-600 dark:text-gray-400">
                 <Clock className="w-4 h-4" />
                 <span className="text-sm">
                   Due: {new Date(task.dueDate).toLocaleDateString(undefined, {
@@ -89,7 +89,7 @@ export const ViewTaskDialog: React.FC<ViewTaskDialogProps> = ({
             {/* Tags */}
             {task.tags && task.tags.length > 0 && (
               <div className="space-y-2">
-                <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                <div className="flex gap-2 items-center text-gray-700 dark:text-gray-300">
                   <Tag className="w-4 h-4" />
                   <h3 className="text-sm font-medium">Tags</h3>
                 </div>

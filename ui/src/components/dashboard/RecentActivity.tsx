@@ -50,7 +50,7 @@ export const RecentActivity = () => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm  dark:bg-gray-800">
+    <div className="bg-white rounded-lg shadow-sm dark:bg-gray-800">
       <div className="space-y-4">
         <AnimatePresence initial={false} mode="popLayout">
           {recentTasks.map((task) => (
@@ -60,7 +60,7 @@ export const RecentActivity = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
               transition={{ type: "spring", stiffness: 500, damping: 30 }}
-              className="flex items-start p-4 space-x-4 transition-colors duration-200 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600"
+              className="flex items-start p-4 space-x-4 bg-gray-50 rounded-lg transition-colors duration-200 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600"
             >
               <div className="flex-shrink-0">
                 <div className={`w-2 h-2 mt-2 rounded-full ${
@@ -70,18 +70,18 @@ export const RecentActivity = () => {
                 }`} />
               </div>
               <div className="flex-grow">
-                <div className="flex items-center justify-between">
+                <div className="flex justify-between items-center">
                   <h3 className="font-medium truncate">{task.title}</h3>
-                  <span className="ml-2 text-xs text-gray-500 whitespace-nowrap">
-                    {formatTime(task.updatedAt.toString())}
-                  </span>
                 </div>
                 <p className="text-sm text-gray-600 dark:text-gray-300">
                   {getActivityMessage(task)}
                 </p>
-                <div className="flex items-center mt-1 text-xs text-gray-500">
+                <div className="flex justify-between items-center mt-2 text-xs text-gray-500">
                   <span className="flex items-center">
                     {task.status.name}
+                  </span>
+                  <span className="text-xs text-gray-500 whitespace-nowrap">
+                    {formatTime(task.updatedAt.toString())}
                   </span>
                 </div>
               </div>
