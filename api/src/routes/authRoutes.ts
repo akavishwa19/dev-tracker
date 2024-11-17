@@ -1,4 +1,4 @@
-import { login, signUp, validate } from "../controllers/authController";
+import { login, resetPassword, signUp, validate } from "../controllers/authController";
 import { validateToken } from "../middlewares/authMiddleware";
 import { LoginRequest, SignupRequest } from "../types/authTypes";
 import express, { NextFunction, Response, Request } from "express";
@@ -14,6 +14,10 @@ router.post("/login", (req: LoginRequest, res: Response, next: NextFunction) =>
 
 router.get("/validate", validateToken, (req: Request, res: Response, next: NextFunction) =>
   validate(req, res, next),
+);
+
+router.post("/reset-password", validateToken, (req: Request, res: Response, next: NextFunction) =>
+  resetPassword(req, res, next),
 );
 
 export default router;

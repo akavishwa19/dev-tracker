@@ -21,7 +21,7 @@ export const signUp = catchAsync(async (req: Request, res: Response) => {
   return sendSuccess(
     res,
     { id: newUser.id, email: newUser.email, name: newUser.name },
-    "User registered successfully",
+    "User registered successfully"
   );
 });
 
@@ -38,14 +38,47 @@ export const login = catchAsync(async (req: Request, res: Response) => {
   sendSuccess(
     res,
     { token, user: { id: user.id, email: user.email, name: user.name } },
-    "User logged in successfully",
+    "User logged in successfully"
   );
 });
 
-export const validate = catchAsync(async (req: AuthenticatedRequest, res: Response) => {
-  if (!req.userId) {
-    return sendError(res, "Unauthorized", 401);
+export const validate = catchAsync(
+  async (req: AuthenticatedRequest, res: Response) => {
+    if (!req.userId) {
+      return sendError(res, "Unauthorized", 401);
+    }
+    const user = await authService.validateUser(req.userId);
+    sendSuccess(res, user, "User validated successfully");
   }
-  const user = await authService.validateUser(req.userId);
-  sendSuccess(res, user, "User validated successfully");
-});
+);
+
+export const resetPassword = catchAsync(
+  async (req: AuthenticatedRequest, res: Response) => {
+    if (!req.userId) {
+      return sendError(res, "Unauthorized", 401);
+    }
+
+    const { userId } = req;
+    const { currentPassword, updatedPassword } = req.body;
+
+    if (!currentPassword || !updatedPassword) {
+      return sendError(res, "existing and new passwords are required", 400);
+    }
+
+    const checkPassword = await authService.matchCurrentPassword({
+      userId,
+      currentPassword,
+    });
+
+    if (!checkPassword) {
+      return sendError(res, "Invalid curent password", 400);
+    }
+
+    const user = await authService.resetPasswordUser({
+      userId,
+      updatedPassword,
+    });
+
+    return sendSuccess(res, user, "password updated successfully");
+  }
+);
