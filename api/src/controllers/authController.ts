@@ -58,8 +58,8 @@ export const resetPassword = catchAsync(
       return sendError(res, "Unauthorized", 401);
     }
 
-    let { userId } = req;
-    let { currentPassword, updatedPassword } = req.body;
+    const { userId } = req;
+    const { currentPassword, updatedPassword } = req.body;
 
     if (!currentPassword || !updatedPassword) {
       return sendError(res, "existing and new passwords are required", 400);
